@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小屁孩的純約會行事曆～</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'Noto Sans TC', 'sans-serif'] },
+                    colors: { cream: { bg: '#FAF5EF', text: '#382E2B', subtext: '#7A6E65' } }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.6/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        html, body {
+            margin: 0; padding: 0; background-color: #FAF5EF;
+            background-image: radial-gradient(#E2D6C8 1.2px, transparent 1.2px);
+            background-size: 24px 24px; color: #382E2B;
+            -webkit-tap-highlight-color: transparent; overflow-x: hidden; position: relative;
+        }
+        .cloud-card { position: relative; z-index: 1; padding: 32px 24px; margin: 18px 12px; }
+        .cloud-card::before {
+            content: ''; position: absolute; inset: 0; z-index: -1;
+            background-color: #FFFFFF; border: 12px solid #E3D1BF; border-radius: 40px;
+            filter: url(#cloud-wave-filter); box-shadow: 0 12px 25px rgba(180, 150, 130, 0.15);
+            -webkit-backface-visibility: hidden; backface-visibility: hidden;
+            -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); will-change: filter;
+        }
+        .cloud-vip-card { position: relative; z-index: 1; padding: 22px 18px; margin-top: 16px; }
+        .cloud-vip-card::before {
+            content: ''; position: absolute; inset: 0; z-index: -1;
+            background-color: #FDF4E8; border: 6px solid #E3D1BF; border-radius: 28px;
+            filter: url(#cloud-wave-filter); -webkit-backface-visibility: hidden; backface-visibility: hidden;
+            -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); will-change: filter;
+        }
+        .foam-shape { border-radius: 28px 22px 26px 24px / 22px 28px 24px 26px !important; }
+        .mild-wave-bg {
+            position: absolute; inset: 0; z-index: -1; filter: url(#mild-wave-filter);
+            border-radius: 28px 22px 26px 24px / 22px 28px 24px 26px; transition: all 0.2s ease;
+            -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0);
+            pointer-events: none;
+        }
+        .safari-repaint-fix {
+            position: relative;
+            z-index: 20;
+            isolation: isolate;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-font-smoothing: antialiased;
+        }
+        .wavy-input-group { position: relative; z-index: 1; display: flex; align-items: center; width: 100%; }
+        .wavy-input-group::before {
+            content: ''; position: absolute; inset: 0; z-index: -1;
+            background-color: #FAF7F2; border: 2px solid #EAE1D7;
+            border-radius: 26px 20px 24px 22px / 20px 26px 22px 24px;
+            filter: url(#mild-wave-filter); transition: all 0.2s ease;
+            -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0);
+        }
+        .wavy-input-group:focus-within::before {
+            background-color: #FFFFFF; border-color: #C89B7B; box-shadow: 0 0 0 4px rgba(200, 155, 123, 0.12);
+        }
+        .wavy-input-group input, .wavy-input-group select, .wavy-input-group textarea {
+            width: 100%; background: transparent; border: none; outline: none; color: #382E2B;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #D4B392; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #C89B7B; }
+        .stripe-pattern { background: repeating-linear-gradient(45deg, #F5EFE8, #F5EFE8 10px, #EAE2D8 10px, #EAE2D8 20px); }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(216, 136, 112, 0.7); }
+            70% { transform: scale(1.04); box-shadow: 0 0 0 10px rgba(216, 136, 112, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(216, 136, 112, 0); }
+        }
+        .pulse-badge { animation: pulse-ring 2s infinite; }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #8C5E3C; font-size: 16px;">載入中... ☕</div>
+    </div>
+
+    <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; left: -9999px; top: -9999px; pointer-events: none;" xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <defs>
+            <filter id="cloud-wave-filter" x="-40%" y="-40%" width="180%" height="180%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+            <filter id="mild-wave-filter" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="4.5" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+    </svg>
+
+    <script type="module">
+        try {
+            const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
+            const { getAuth, signInAnonymously, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+            const { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, updateDoc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+            window.FirebaseLib = { initializeApp, getAuth, signInAnonymously, onAuthStateChanged, getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, updateDoc, deleteDoc };
+            window.dispatchEvent(new Event('firebaseready'));
+        } catch(e) { console.warn("Firebase Async Load Skip"); }
+    </script>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+        const _h = (s) => { let h = 0; for(let i = 0; i < s.length; i++) h = Math.imul(31, h) + s.charCodeAt(i) | 0; return h; };
+
+        const memoryStorage = {};
+        const getLocalData = (key, defaultVal) => {
+            try { const item = window.localStorage.getItem(key); return item ? JSON.parse(item) : defaultVal; }
+            catch (e) { return memoryStorage[key] !== undefined ? memoryStorage[key] : defaultVal; }
+        };
+        const setLocalData = (key, val) => {
+            try { window.localStorage.setItem(key, JSON.stringify(val)); } catch (e) { memoryStorage[key] = val; }
+        };
+
+        const thsrFares = {
+            "南港": 0, "台北": 0, "新北": 0, "桃園": 125, "新竹": 250, "苗栗": 385,
+            "台中": 645, "彰化": 765, "雲林": 870, "嘉義": 1015, "台南": 1280, "高雄": 1415
+        };
+
+        const getSlotString = (dateObj, hourOffset = 0) => {
+            const d = new Date(dateObj);
+            d.setHours(d.getHours() + hourOffset, 0, 0, 0);
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}_${String(d.getHours()).padStart(2, '0')}`;
+        };
+
+        const generateSlotsForBooking = (dateStr, startHour, duration) => {
+            const slots = [];
+            const baseDate = new Date(`${dateStr}T00:00:00`);
+            baseDate.setHours(startHour);
+            for(let i = 0; i < duration; i++) slots.push(getSlotString(baseDate, i));
+            return slots;
+        };
+
+        const isSystemUnavailable = (slotStr) => {
+            const parts = slotStr.split('_');
+            if (parts.length !== 2) return false;
+            const slotDate = new Date(`${parts[0]}T00:00:00`);
+            const hour = parseInt(parts[1], 10);
+            if (slotDate >= new Date('2027-01-04T00:00:00')) return false;
+            const day = slotDate.getDay();
+            if ((day === 2 || day === 3) && (hour >= 8 && hour < 12)) return true;
+            if ((day === 2 || day === 4) && (hour >= 15 && hour < 20)) return true;
+            if (day === 5 && (hour >= 13 && hour < 20)) return true;
+            return false;
+        };
+
+        const isSameBooking = (a, b) => {
+            if (!a || !b) return false;
+            if (a.id && b.id && a.id === b.id) return true;
+            return (
+                (a.twitter || '').toLowerCase() === (b.twitter || '').toLowerCase() &&
+                a.date === b.date &&
+                Number(a.startHour) === Number(b.startHour) &&
+                Number(a.duration) === Number(b.duration)
+            );
+        };
+
+        const deduplicateBookings = (list) => {
+            if (!Array.isArray(list)) return [];
+            const map = new Map();
+            list.forEach(item => {
+                if (!item) return;
+                const key = item.id || `${item.twitter}_${item.date}_${item.startHour}_${item.duration}`;
+                let dupKey = null;
+                for (let [k, ex] of map.entries()) {
+                    if (isSameBooking(ex, item)) {
+                        dupKey = k; break;
+                    }
+                }
+                if (dupKey) {
+                    const ex = map.get(dupKey);
+                    if (item.status === 'confirmed' || item.status === 'completed' || !ex.status) { map.delete(dupKey); map.set(key, item); }
+                } else map.set(key, item);
+            });
+            return Array.from(map.values());
+        };
+
+        const calculatePrice = (startHour, duration, isVip, planType) => {
+            let basePrice = 0, extraHours = 0, midnightCount = 0, midnightSurcharge = 0;
+            const BASE_HR = 1000;
+            if (planType === 'overnight' && isVip) {
+                basePrice = (Math.floor(duration / 24) * 18000) + ((duration % 24) * BASE_HR * 0.8);
+            } else if (planType === 'cuddle' && isVip) {
+                basePrice = duration * (BASE_HR * 1.2);
+                if (duration >= 12) basePrice *= 0.8;
+            } else {
+                if (isVip) {
+                    basePrice = duration >= 12 ? duration * 660 : duration >= 6 ? duration * 750 : duration * 800;
+                } else {
+                    if (duration >= 12) { basePrice = 8800; extraHours = duration - 12; }
+                    else if (duration >= 6) { basePrice = 5200; extraHours = duration - 6; }
+                    else if (duration >= 4) { basePrice = duration * BASE_HR * 0.9; }
+                    else { basePrice = duration * BASE_HR; }
+                    if (extraHours > 0) basePrice += extraHours * (BASE_HR * 0.9);
+                }
+                for (let i = 0; i < duration; i++) {
+                    let h = (startHour + i) % 24;
+                    if (h >= 0 && h < 10) midnightCount++;
+                }
+                if (midnightCount > 0) {
+                    midnightSurcharge = isVip ? midnightCount * (BASE_HR - (basePrice / duration)) : midnightCount * (BASE_HR * 0.2);
+                }
+            }
+            return { total: Math.round(basePrice + midnightSurcharge), basePrice: Math.round(basePrice), midnightSurcharge: Math.round(midnightSurcharge), midnightCount, isVip };
+        };
+
+        // --- Modals ---
+        const Modal = ({ isOpen, title, message, onClose, closeLabel, actionLabel, onAction }) => {
+            if (!isOpen) return null;
+            return (
+                <div className="fixed inset-0 z-[120] flex items-center justify-center bg-[#382E2B]/30 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-3xl p-6 w-full max-w-sm border-2 border-[#EAE1D7] text-center shadow-2xl">
+                        <h3 className="text-xl font-extrabold text-[#382E2B] mb-2">{title}</h3>
+                        <p className="text-[#7A6E65] mb-6 whitespace-pre-line text-sm leading-relaxed">{message}</p>
+                        <div className="flex flex-col gap-2.5">
+                            <button onClick={onClose} className="foam-shape w-full py-3.5 bg-[#C89B7B] text-white font-bold hover:bg-[#B58462] transition-colors shadow-sm">
+                                {closeLabel || '知道啦 ☕'}
+                            </button>
+                            {actionLabel && onAction && (
+                                <button onClick={onAction} className="foam-shape w-full py-3 bg-[#FAF4EB] text-[#8C5E3C] border-2 border-[#E7D4BF] font-bold hover:bg-[#F3E7D7] transition-colors shadow-sm text-sm">
+                                    {actionLabel}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ImageModal = ({ isOpen, title, imageUrl, onClose }) => {
+            if (!isOpen) return null;
+            const [currentUrl, setCurrentUrl] = useState(encodeURI(imageUrl));
+            const [hasError, setHasError] = useState(false);
+            useEffect(() => { setCurrentUrl(encodeURI(imageUrl)); setHasError(false); }, [imageUrl]);
+            const handleImgError = () => {
+                if (currentUrl.endsWith('.PNG')) setCurrentUrl(encodeURI(imageUrl.replace('.PNG', '.png')));
+                else if (currentUrl.endsWith('.png')) setCurrentUrl(encodeURI(imageUrl.replace('.png', '.PNG')));
+                else setHasError(true);
+            };
+            return (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center bg-[#382E2B]/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-3xl p-5 w-full max-w-md border border-[#EAE1D7] flex flex-col max-h-[90vh] shadow-2xl">
+                        <h3 className="text-lg font-bold text-[#382E2B] mb-3 text-center">{title}</h3>
+                        <div className="overflow-y-auto flex-grow rounded-2xl border border-[#EAE1D7] flex items-center justify-center bg-[#FAF7F2] relative p-2">
+                            {!hasError ? (<img src={currentUrl} alt={title} className="w-full h-auto object-contain rounded-xl" onError={handleImgError} />)
+                            : (<div className="text-center p-6 bg-[#FAF4EB] rounded-2xl w-full"><p className="text-[#B8735C] font-bold mb-2">無法載入圖片 🥺</p></div>)}
+                        </div>
+                        <button onClick={onClose} className="foam-shape w-full mt-4 py-3.5 bg-[#C89B7B] text-white font-bold hover:bg-[#B58462] transition-colors shadow-sm">我已詳閱並了解 ☕</button>
+                    </div>
+                </div>
+            );
+        };
+
+        const ThsrFareModal = ({ isOpen, onClose, currentLocation }) => {
+            if (!isOpen) return null;
+            const candidateImages = ['thsr.PNG', 'thsr.png', '高鐵票價.PNG', '高鐵票價.png', '高鐵.PNG', '高鐵.png'];
+            const [imgIndex, setImgIndex] = useState(0);
+            const [showImg, setShowImg] = useState(true);
+
+            useEffect(() => {
+                setImgIndex(0);
+                setShowImg(true);
+            }, [isOpen]);
+
+            const handleImgErr = () => {
+                if (imgIndex + 1 < candidateImages.length) {
+                    setImgIndex(imgIndex + 1);
+                } else {
+                    setShowImg(false);
+                }
+            };
+
+            return (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center bg-[#382E2B]/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-3xl p-5 w-full max-w-md border-2 border-[#EAE1D7] flex flex-col max-h-[88vh] shadow-2xl">
+                        <h3 className="text-lg font-extrabold text-[#382E2B] mb-1 text-center flex items-center justify-center gap-1.5">
+                            <span>🚄</span> 高鐵票價與來回車馬費一覽表
+                        </h3>
+                        <p className="text-[11px] text-[#7A6E65] text-center mb-3">
+                            雙北以外地區若選擇「召喚小屁孩到高鐵站」，將依台北站出發之高鐵標準車廂<b>來回票價</b>併入定金收取唷！
+                        </p>
+                        <div className="overflow-y-auto flex-grow rounded-2xl border border-[#EAE1D7] bg-[#FAF7F2] p-3 space-y-3">
+                            {showImg && (
+                                <img
+                                    src={encodeURI(candidateImages[imgIndex])}
+                                    alt="高鐵票價表"
+                                    className="w-full h-auto object-contain rounded-xl border border-[#EAE1D7]"
+                                    onError={handleImgErr}
+                                />
+                            )}
+                            <div className="grid grid-cols-3 text-xs font-extrabold text-[#8C5E3C] bg-[#FAF4EB] border border-[#E7D4BF] rounded-xl py-2 px-3 text-center">
+                                <span className="text-left">約會縣市</span>
+                                <span>高鐵單程</span>
+                                <span className="text-right">來回車馬費</span>
+                            </div>
+                            <div className="divide-y divide-[#EAE1D7] bg-white rounded-xl border border-[#EAE1D7] px-3">
+                                {Object.entries(thsrFares).map(([city, fare]) => {
+                                    const isCurrent = currentLocation === city;
+                                    return (
+                                        <div key={city} className={`grid grid-cols-3 py-2 text-xs items-center text-center ${isCurrent ? 'font-extrabold text-[#C89B7B] bg-[#FDF4E8] -mx-3 px-3' : 'text-[#382E2B]'}`}>
+                                            <span className="text-left flex items-center gap-1">
+                                                {city} {isCurrent && <span className="text-[10px] bg-[#C89B7B] text-white px-1.5 py-0.2 rounded-full">目前選擇</span>}
+                                            </span>
+                                            <span className="text-[#7A6E65]">{fare === 0 ? '免車馬費' : `$${fare}`}</span>
+                                            <span className="text-right font-bold text-[#8C5E3C]">{fare === 0 ? '$0' : `+$${fare * 2}`}</span>
+                                        </div>
+                                    );
+                                })}
+                                <div className="grid grid-cols-3 py-2.5 text-xs items-center text-center text-[#8C5E3C] font-bold">
+                                    <span className="text-left">其他地區 / 海外</span>
+                                    <span className="col-span-2 text-right text-[#B8735C]">依實際交通車馬費另計</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button onClick={onClose} className="foam-shape w-full mt-4 py-3.5 bg-[#C89B7B] text-white font-bold hover:bg-[#B58462] transition-colors shadow-sm">
+                            我知道啦 ☕
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        const AdminPendingModal = ({ isOpen, pendingBookings, members, onClose, onApprove, onReject }) => {
+            if (!isOpen) return null;
+            return (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#382E2B]/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-3xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto border-2 border-[#EAE1D7]">
+                        <h3 className="text-xl font-bold text-[#8C5E3C] mb-4">待審核預約 ({pendingBookings.length})</h3>
+                        {pendingBookings.length === 0 ? <p className="text-center text-[#7A6E65]">目前沒有新預約。</p> : pendingBookings.map((b, idx) => {
+                            const displayNick = b.nickname || members?.[b.twitter]?.nickname;
+                            return (
+                                <div key={b.id || idx} className="border border-[#E7D4BF] p-3 mb-3 rounded-xl bg-[#FAF4EB]">
+                                    <p className="font-bold text-[#382E2B]">
+                                        @{b.twitter} {displayNick ? <span className="text-[#8C5E3C] text-xs font-bold ml-1">({displayNick})</span> : null}
+                                    </p>
+                                    <p className="text-sm text-[#7A6E65]">{b.date} {String(b.startHour).padStart(2, '0')}:00 ({b.duration}h) · {b.location || '新北'}</p>
+                                    <div className="flex gap-2 mt-3">
+                                        <button type="button" onClick={() => onApprove(b)} className="flex-1 bg-[#849B89] text-white py-1.5 rounded-lg font-bold shadow-sm active:scale-95 transition">核準</button>
+                                        <button type="button" onClick={() => onReject(b)} className="flex-1 bg-[#D98880] text-white py-1.5 rounded-lg font-bold shadow-sm active:scale-95 transition">拒絕</button>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                        <button type="button" onClick={onClose} className="w-full mt-2 py-2 bg-[#EAE1D7] text-[#382E2B] font-bold rounded-xl shadow-sm">關閉</button>
+                    </div>
+                </div>
+            );
+        };
+
+        const AdminBookingModal = ({ isOpen, booking, members, onClose, onConfirmEnd, onRevertComplete, onCancelBooking }) => {
+            if (!isOpen || !booking) return null;
+            const displayNick = booking.nickname || members?.[booking.twitter]?.nickname;
+            return (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#382E2B]/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-3xl p-6 w-full max-w-md border-2 border-[#EAE1D7]">
+                        <h3 className="text-xl font-bold text-[#8C5E3C] mb-4">管理預約</h3>
+                        <p className="font-bold text-[#382E2B]">
+                            @{booking.twitter} {displayNick ? <span className="text-[#8C5E3C] text-sm font-bold ml-1">({displayNick})</span> : null}
+                        </p>
+                        <p className="text-sm text-[#7A6E65] mb-4">{booking.date} {String(booking.startHour).padStart(2, '0')}:00 ({booking.duration}h)</p>
+                        <div className="flex flex-col gap-2">
+                            {booking.status !== 'completed' && (
+                                <button type="button" onClick={() => onConfirmEnd(booking)} className="bg-[#849B89] text-white py-2.5 rounded-xl font-bold shadow-sm active:scale-95 transition">
+                                    標記為已完成 (累積 1 次)
+                                </button>
+                            )}
+                            {booking.status === 'completed' && (
+                                <button type="button" onClick={() => onRevertComplete(booking)} className="bg-[#C89B7B] text-white py-2.5 rounded-xl font-bold shadow-sm active:scale-95 transition">
+                                    撤銷完成狀態
+                                </button>
+                            )}
+                            <button type="button" onClick={() => onCancelBooking(booking)} className="bg-[#D98880] text-white py-2.5 rounded-xl font-bold shadow-sm active:scale-95 transition">
+                                刪除此預約 (釋出時段)
+                            </button>
+                            <button type="button" onClick={onClose} className="bg-[#EAE1D7] text-[#382E2B] py-2.5 rounded-xl font-bold mt-2 shadow-sm">
+                                關閉
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const AdminMembersModal = ({ isOpen, members, bookings, unavailables, onClose, onToggleBlacklist, onImportData }) => {
+            const [showPasteBox, setShowPasteBox] = useState(false);
+            const [pasteCode, setPasteCode] = useState('');
+            const [expandedMember, setExpandedMember] = useState(null);
+
+            const consolidatedMembers = useMemo(() => {
+                const map = {};
+                Object.values(members || {}).forEach(m => {
+                    if (!m || !m.twitter) return;
+                    const key = m.twitter.toLowerCase();
+                    map[key] = {
+                        twitter: key,
+                        nickname: m.nickname || '',
+                        isBlacklisted: !!m.isBlacklisted,
+                        records: []
+                    };
+                });
+                (bookings || []).forEach(b => {
+                    if (!b || !b.twitter) return;
+                    const key = b.twitter.toLowerCase();
+                    if (!map[key]) {
+                        map[key] = {
+                            twitter: key,
+                            nickname: b.nickname || '',
+                            isBlacklisted: false,
+                            records: []
+                        };
+                    } else if (!map[key].nickname && b.nickname) {
+                        map[key].nickname = b.nickname;
+                    }
+                    map[key].records.push(b);
+                });
+                Object.values(map).forEach(m => {
+                    m.records.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+                });
+                return Object.values(map);
+            }, [members, bookings]);
+
+            if (!isOpen) return null;
+
+            const buildBackupPayload = () => {
+                const mergedMembersObj = {};
+                consolidatedMembers.forEach(m => {
+                    mergedMembersObj[m.twitter] = {
+                        twitter: m.twitter,
+                        nickname: m.nickname || '',
+                        isBlacklisted: !!m.isBlacklisted,
+                        bookingCount: m.records.filter(r => r.status === 'completed').length,
+                        recordsSummary: m.records.map(r => ({
+                            id: r.id,
+                            date: r.date,
+                            startHour: r.startHour,
+                            duration: r.duration,
+                            status: r.status,
+                            location: r.location,
+                            transportation: r.transportation,
+                            itinerary: r.itinerary
+                        }))
+                    };
+                });
+                return {
+                    version: '1.0',
+                    exportedAt: new Date().toISOString(),
+                    members: mergedMembersObj,
+                    bookings: bookings || [],
+                    unavailables: unavailables || []
+                };
+            };
+
+            const handleDownloadBackupFile = () => {
+                try {
+                    const payload = buildBackupPayload();
+                    const jsonStr = JSON.stringify(payload, null, 2);
+                    const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    const dateStr = new Date().toLocaleDateString('en-CA');
+                    link.href = url;
+                    link.download = `小屁孩行事曆_會員與行程備份_${dateStr}.json`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                } catch (e) {
+                    alert('下載失敗，建議點擊旁邊的「📋 複製備份碼」保存唷！');
+                }
+            };
+
+            const handleCopyBackupCode = () => {
+                try {
+                    const payload = buildBackupPayload();
+                    const jsonStr = JSON.stringify(payload);
+                    const tempInput = document.createElement("textarea");
+                    tempInput.value = jsonStr;
+                    tempInput.style.position = "fixed";
+                    tempInput.style.left = "-9999px";
+                    document.body.appendChild(tempInput);
+                    tempInput.select();
+                    tempInput.setSelectionRange(0, 999999);
+                    document.execCommand("copy");
+                    document.body.removeChild(tempInput);
+                    alert(`✅ 已成功複製完整備份碼！（共 ${consolidatedMembers.length} 位會員、${(bookings || []).length} 筆約會行程紀錄）\n\n您可以先貼到 LINE Keep 或手機備忘錄保存，修改網頁後再點「📝 貼上備份碼導入」即可還原！`);
+                } catch (e) {
+                    alert('複製失敗，請改用下載備份檔功能唷！');
+                }
+            };
+
+            const handleFileUpload = (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                    try {
+                        const parsed = JSON.parse(evt.target.result);
+                        onImportData(parsed);
+                    } catch (err) {
+                        alert('❌ 備份檔案格式不正確，請確認是否為匯出的 .json 檔案！');
+                    }
+                };
+                reader.readAsText(file);
+                e.target.value = '';
+            };
+
+            const handlePasteImport = () => {
+                if (!pasteCode.trim()) {
+                    alert('請先在框內貼上之前複製的備份碼唷！');
+                    return;
+                }
+                try {
+                    const parsed = JSON.parse(pasteCode.trim());
+                    onImportData(parsed);
+                    setPasteCode('');
+                    setShowPasteBox(false);
+                } catch (err) {
+                    alert('❌ 備份碼格式不正確，請確認是否完整複製了備份內容！');
+                }
+            };
+
+            return (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#382E2B]/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-3xl p-5 w-full max-w-md max-h-[85vh] overflow-y-auto border-2 border-[#EAE1D7] shadow-2xl flex flex-col">
+                        <h3 className="text-xl font-extrabold text-[#8C5E3C] mb-3 flex items-center justify-between">
+                            <span>👥 會員管理與資料備份</span>
+                            <span className="text-xs bg-[#FAF4EB] text-[#8C5E3C] px-2.5 py-1 rounded-full border border-[#E7D4BF]">共 {consolidatedMembers.length} 位會員</span>
+                        </h3>
+
+                        <div className="bg-[#FDF4E8] border-2 border-[#E7D4BF] rounded-2xl p-3.5 mb-4 space-y-2.5">
+                            <div className="text-xs font-extrabold text-[#8C5E3C] flex items-center gap-1">
+                                <span>💾</span> 匯出／導入會員與行程紀錄 (改版換頁必備)
+                            </div>
+                            <p className="text-[11px] text-[#7A6E65] leading-relaxed">
+                                匯出內容包含目前所有<b>會員 ID、LINE 暱稱、黑名單狀態</b>以及<b>所有約會時間與詳細行程紀錄</b>。
+                            </p>
+                            <div className="grid grid-cols-2 gap-2 pt-1">
+                                <button type="button" onClick={handleDownloadBackupFile} className="bg-[#C89B7B] hover:bg-[#B58462] text-white text-xs font-bold py-2 px-2.5 rounded-xl shadow-sm transition flex items-center justify-center gap-1">
+                                    <span>📥</span> 匯出備份檔 (.json)
+                                </button>
+                                <button type="button" onClick={handleCopyBackupCode} className="bg-[#8C5E3C] hover:bg-[#724B2E] text-white text-xs font-bold py-2 px-2.5 rounded-xl shadow-sm transition flex items-center justify-center gap-1">
+                                    <span>📋</span> 複製備份碼 (推薦)
+                                </button>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 pt-1 border-t border-[#E7D4BF]/70">
+                                <label className="bg-white hover:bg-[#FAF4EB] text-[#8C5E3C] border border-[#C89B7B] text-xs font-bold py-2 px-2.5 rounded-xl shadow-sm transition flex items-center justify-center gap-1 cursor-pointer text-center">
+                                    <span>📂</span> 選擇備份檔導入
+                                    <input type="file" accept=".json,application/json" onChange={handleFileUpload} className="hidden" />
+                                </label>
+                                <button type="button" onClick={() => setShowPasteBox(!showPasteBox)} className="bg-white hover:bg-[#FAF4EB] text-[#8C5E3C] border border-[#C89B7B] text-xs font-bold py-2 px-2.5 rounded-xl shadow-sm transition flex items-center justify-center gap-1">
+                                    <span>📝</span> {showPasteBox ? '收起貼上框' : '貼上備份碼導入'}
+                                </button>
+                            </div>
+                            {showPasteBox && (
+                                <div className="pt-2 space-y-2">
+                                    <textarea
+                                        value={pasteCode}
+                                        onChange={(e) => setPasteCode(e.target.value)}
+                                        rows="3"
+                                        placeholder="請在此貼上之前複製的備份資料碼..."
+                                        className="w-full p-2.5 text-xs bg-white border border-[#E7D4BF] rounded-xl outline-none text-[#382E2B] font-mono"
+                                    ></textarea>
+                                    <button type="button" onClick={handlePasteImport} className="w-full bg-[#849B89] hover:bg-[#6E8573] text-white text-xs font-bold py-2 rounded-xl shadow-sm transition">
+                                        ✅ 確認導入並還原所有會員與行程資料
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="space-y-2.5 overflow-y-auto flex-grow pr-0.5">
+                            {consolidatedMembers.length === 0 ? (
+                                <p className="text-[#7A6E65] text-center py-6 text-sm">尚無會員資料</p>
+                            ) : consolidatedMembers.map(m => {
+                                const completedCnt = m.records.filter(r => r.status === 'completed').length;
+                                const isExpanded = expandedMember === m.twitter;
+                                return (
+                                    <div key={m.twitter} className="border border-[#E7D4BF] p-3 rounded-2xl bg-[#FAF4EB] space-y-2">
+                                        <div className="flex justify-between items-start gap-2">
+                                            <div className="flex flex-col">
+                                                <div className="flex items-center gap-1.5 flex-wrap">
+                                                    <span className="font-extrabold text-[#382E2B] text-sm">@{m.twitter}</span>
+                                                    {completedCnt >= 3 && <span className="text-[10px] bg-[#C89B7B] text-white px-2 py-0.5 rounded-full font-bold">👑 VIP ({completedCnt}次)</span>}
+                                                    {completedCnt < 3 && <span className="text-[10px] bg-white text-[#7A6E65] border border-[#EAE1D7] px-2 py-0.5 rounded-full font-bold">完成 {completedCnt} 次</span>}
+                                                </div>
+                                                <span className="text-xs text-[#8C5E3C] font-bold mt-0.5">
+                                                    暱稱 / LINE：{m.nickname ? m.nickname : '尚未填寫'}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-1.5 shrink-0">
+                                                {m.records.length > 0 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setExpandedMember(isExpanded ? null : m.twitter)}
+                                                        className="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-white text-[#8C5E3C] border border-[#E7D4BF] shadow-sm"
+                                                    >
+                                                        {isExpanded ? '收起紀錄 ▲' : `約會紀錄 (${m.records.length}) ▼`}
+                                                    </button>
+                                                )}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => onToggleBlacklist(m.twitter, m.isBlacklisted)}
+                                                    className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold text-white shadow-sm ${m.isBlacklisted ? 'bg-[#849B89]' : 'bg-[#D98880]'}`}
+                                                >
+                                                    {m.isBlacklisted ? '解除黑名單' : '黑名單'}
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {isExpanded && m.records.length > 0 && (
+                                            <div className="pt-2 border-t border-[#E7D4BF] space-y-2">
+                                                {m.records.map((rec, idx) => {
+                                                    const statusLabel = rec.status === 'completed' ? '✅ 已完成' : rec.status === 'confirmed' ? '📌 已核準' : '⏳ 待審核';
+                                                    return (
+                                                        <div key={rec.id || idx} className="bg-white p-2.5 rounded-xl border border-[#EAE1D7] text-xs space-y-1">
+                                                            <div className="flex justify-between items-center font-bold text-[#382E2B]">
+                                                                <span>📅 {rec.date} {String(rec.startHour).padStart(2, '0')}:00 ({rec.duration}h)</span>
+                                                                <span className="text-[10px] text-[#8C5E3C]">{statusLabel}</span>
+                                                            </div>
+                                                            <div className="text-[11px] text-[#7A6E65]">
+                                                                📍 {rec.location || '新北'} ｜ 🚗 {rec.transportation || '大眾交通'}
+                                                            </div>
+                                                            {rec.itinerary && (
+                                                                <div className="text-[11px] text-[#382E2B] bg-[#FAF7F2] p-2 rounded-lg whitespace-pre-line max-h-28 overflow-y-auto border border-[#EAE1D7]/60">
+                                                                    {rec.itinerary}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <button type="button" onClick={onClose} className="w-full mt-4 py-2.5 bg-[#EAE1D7] text-[#382E2B] font-bold rounded-xl shadow-sm shrink-0">關閉</button>
+                    </div>
+                </div>
+            );
+        };
+
+        const CustomerHistoryModal = ({ isOpen, history, onClose }) => {
+            if (!isOpen) return null;
+            return (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#382E2B]/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-3xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto border-2 border-[#EAE1D7]">
+                        <h3 className="text-xl font-bold text-[#8C5E3C] mb-4">歷史約會紀錄</h3>
+                        {history.length === 0 ? <p className="text-[#7A6E65] text-center">尚無完成的約會紀錄</p> : history.map((h, i) => (
+                            <div key={i} className="border border-[#E7D4BF] p-3 mb-2 rounded-xl bg-[#FAF4EB]">
+                                <p className="font-bold text-[#382E2B]">{h.date}</p>
+                                <p className="text-sm text-[#7A6E65]">{String(h.startHour).padStart(2, '0')}:00 開始 (共 {h.duration} 小時)</p>
+                            </div>
+                        ))}
+                        <button type="button" onClick={onClose} className="w-full mt-4 py-2 bg-[#EAE1D7] text-[#382E2B] font-bold rounded-xl shadow-sm">關閉</button>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Main App Component ---
+        const App = () => {
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'cute-dating-calendar-v1';
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+                apiKey: "AIzaSyBvW3x4X8_dummy_key", authDomain: `${appId}.firebaseapp.com`, projectId: appId, storageBucket: `${appId}.appspot.com`,
+            };
+
+            const [db, setDb] = useState(null);
+            const [user, setUser] = useState(null);
+            const [bookings, setBookings] = useState([]);
+            const [unavailables, setUnavailables] = useState([]);
+            const [members, setMembers] = useState({});
+
+            const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString('en-CA'));
+            const [bookingStartData, setBookingStartData] = useState(null);
+            const [selectedDays, setSelectedDays] = useState(0);
+            const [selectedDuration, setSelectedDuration] = useState(2);
+            const [twitterHandle, setTwitterHandle] = useState('');
+            const [nickname, setNickname] = useState('');
+            const [planType, setPlanType] = useState('normal');
+            const [itinerary, setItinerary] = useState('');
+            const [bankAccountLast5, setBankAccountLast5] = useState('');
+            const [location, setLocation] = useState('新北');
+            const [transportation, setTransportation] = useState('大眾交通（限雙北地區）');
+
+            const [lastUserDemand, setLastUserDemand] = useState('');
+            const [lastGeneratedText, setLastGeneratedText] = useState('');
+            const [pastRecommendations, setPastRecommendations] = useState([]);
+
+            const [isAdmin, setIsAdmin] = useState(false);
+            const [showAdminLogin, setShowAdminLogin] = useState(false);
+            const [adminPwd, setAdminPwd] = useState('');
+            const [showMembersModal, setShowMembersModal] = useState(false);
+            const [showHistoryModal, setShowHistoryModal] = useState(false);
+            const [showRulesModal, setShowRulesModal] = useState(false);
+            const [showThsrModal, setShowThsrModal] = useState(false);
+            const [showPendingModal, setShowPendingModal] = useState(false);
+            const [selectedAdminBooking, setSelectedAdminBooking] = useState(null);
+
+            const [modalConfig, setModalConfig] = useState({ isOpen: false, title: '', message: '', closeLabel: '', actionLabel: '', onAction: null });
+            const [isGeneratingItinerary, setIsGeneratingItinerary] = useState(false);
+            const [bookingSuccessData, setBookingSuccessData] = useState(null);
+            const [pendingBookingPayload, setPendingBookingPayload] = useState(null);
+            const [isCopied, setIsCopied] = useState(false);
+
+            const showModal = (title, message, options = {}) => setModalConfig({
+                isOpen: true,
+                title,
+                message,
+                closeLabel: options.closeLabel || '',
+                actionLabel: options.actionLabel || '',
+                onAction: options.onAction || null
+            });
+            const closeModal = () => setModalConfig({ isOpen: false, title: '', message: '', closeLabel: '', actionLabel: '', onAction: null });
+
+            const totalHours = useMemo(() => planType === 'overnight' ? (selectedDays * 24) + selectedDuration : selectedDuration, [planType, selectedDays, selectedDuration]);
+
+            useEffect(() => {
+                if (planType !== 'overnight') {
+                    setSelectedDays(0);
+                    if (selectedDuration < 2) setSelectedDuration(2);
+                    if (planType === 'normal' && selectedDuration > 18) setSelectedDuration(18);
+                } else {
+                    if (selectedDays === 0) setSelectedDays(1);
+                    setSelectedDuration(0);
+                }
+            }, [planType]);
+
+            const isGreaterTaipei = ['南港', '台北', '新北'].includes(location);
+            const isOtherArea = location === '其他地區（請於行程欄位備註）';
+            const isOverseas = location === '海外（請於行程欄位備註）';
+            const isExtraTravelFee = transportation.includes('車馬費另計');
+            const showThsrFareButton = !isGreaterTaipei && !isOtherArea && !isOverseas && transportation === '召喚小屁孩到高鐵站（再轉大眾or汽機車）';
+
+            useEffect(() => {
+                if (isOverseas) {
+                    if (transportation !== '帶小屁孩搭飛機（車馬費另計）') {
+                        setTransportation('帶小屁孩搭飛機（車馬費另計）');
+                    }
+                } else if (isOtherArea) {
+                    if (transportation !== '召喚小屁孩（車馬費另計）' && transportation !== '開車接送') {
+                        setTransportation('召喚小屁孩（車馬費另計）');
+                    }
+                } else if (isGreaterTaipei) {
+                    const validTaipeiOptions = ['大眾交通（限雙北地區）', '開車接送', '機車接送'];
+                    if (!validTaipeiOptions.includes(transportation)) {
+                        setTransportation('大眾交通（限雙北地區）');
+                    }
+                } else {
+                    const validOutsideOptions = ['召喚小屁孩到高鐵站（再轉大眾or汽機車）', '開車接送', '機車接送'];
+                    if (!validOutsideOptions.includes(transportation)) {
+                        setTransportation('召喚小屁孩到高鐵站（再轉大眾or汽機車）');
+                    }
+                }
+            }, [location, isGreaterTaipei, isOtherArea, isOverseas]);
+
+            const travelFee = useMemo(() => transportation === '召喚小屁孩到高鐵站（再轉大眾or汽機車）' ? (thsrFares[location] || 0) * 2 : 0, [location, transportation]);
+            const depositAmount = useMemo(() => {
+                let baseDeposit = (totalHours >= 12 || planType === 'overnight') ? 2000 : totalHours >= 6 ? 1000 : 500;
+                return baseDeposit + travelFee;
+            }, [totalHours, planType, travelFee]);
+
+            // =========================================================================
+            // 🚀 100% 純 AI 關鍵字思考與搜尋引擎 (無任何預設寫死店家名單)
+            // =========================================================================
+            const _kParts = ['AQ', '.Ab8', 'RN6I', 'vrsH', 'Xv1-', 'qtIQ', 'N5np', 'UO29', 'U76O', 'iZfl', 'JEHE', 'USAK', '7adM', 'vug'];
+
+            const executeAIGenerateItinerary = async (forceNoIdea = false) => {
+                const currentText = forceNoIdea ? '' : itinerary.trim();
+                let effectiveDemand = currentText;
+                let avoidList = [...pastRecommendations];
+
+                if (!forceNoIdea && lastGeneratedText && currentText === lastGeneratedText.trim()) {
+                    effectiveDemand = lastUserDemand;
+                } else {
+                    effectiveDemand = currentText;
+                    setLastUserDemand(currentText);
+                    if (currentText !== lastUserDemand) {
+                        avoidList = [];
+                        setPastRecommendations([]);
+                    }
+                }
+
+                setIsGeneratingItinerary(true);
+
+                try {
+                    const startHour = bookingStartData.hour;
+                    const startHourStr = `${String(startHour).padStart(2, '0')}:00`;
+                    const endHourStr = `${String((startHour + totalHours) % 24).padStart(2, '0')}:00`;
+
+                    const timeSlotsDesc = [];
+                    const numSegments = totalHours >= 6 ? 3 : totalHours >= 4 ? 2 : 1;
+                    let remHours = totalHours;
+                    let curH = startHour;
+                    for (let i = 0; i < numSegments; i++) {
+                        const segLen = i === numSegments - 1 ? remHours : Math.max(2, Math.round(remHours / (numSegments - i)));
+                        const sH = curH % 24;
+                        const eH = (curH + segLen) % 24;
+                        const midH = ((sH + (eH > sH ? eH : eH + 24)) / 2) % 24;
+                        let skyHint = '白天光線充足時段（適合戶外景觀、水岸、早午餐或看展）';
+                        if (midH >= 14.0 && midH < 17.5) skyHint = '午後與夕陽時段（最適合看海景咖啡廳、水岸踩船、山城老街或景觀下午茶）';
+                        else if (midH >= 17.5 && midH < 21.5) skyHint = '傍晚至入夜時段（適合泡溫泉、逛觀光夜市、精緻晚餐鍋物燒肉或看夜景）';
+                        else if (midH >= 21.5 || midH < 6) skyHint = '深夜微醺時段（適合深夜食堂、餐酒館小酌、夜景或宵夜夜市）';
+
+                        timeSlotsDesc.push(`第${i + 1}段：${String(sH).padStart(2, '0')}:00 - ${String(eH).padStart(2, '0')}:00（${skyHint}）`);
+                        curH += segLen;
+                        remHours -= segLen;
+                    }
+
+                    const avoidInstruction = avoidList.length > 0
+                        ? `\n⚠️【強制避開重複名單】：客人剛剛已經看過以下店家，這次請務必換一批全新的真實店家與備選，絕對不可再出現：${avoidList.join('、')}。`
+                        : '';
+
+                    const aiPrompt = `你是一位極具品味、精通全台灣各縣市地理動線與真實名店的「首席約會行程規劃顧問」。
+請根據以下客人的預約條件，進行深度的地理動線思考與真實店家檢索，為客人量身打造一份浪漫、連貫且極具吸引力的專屬約會企劃：
+
+【預約基本條件】
+- 約會縣市：${location}
+- 預約時間：${startHourStr} 至 ${endHourStr}（共 ${totalHours} 小時）
+- 時段天色結構：
+  ${timeSlotsDesc.join('\n  ')}
+- 交通方式：${transportation}
+- 客人輸入的期望關鍵字／需求：${effectiveDemand ? `「${effectiveDemand}」` : '「客人目前沒有特定想法，請為他構思一套山海景觀與美食兼具的順路企劃」'}
+${avoidInstruction}
+
+【🧠 AI 顧問思考與排程四大鐵則（務必嚴格遵守）】
+1. 100% 滿足客人所有關鍵字願望：客人提到的每個活動或地點（例如同時提到看海下午茶、泡溫泉、逛夜市，或特定地標與餐廳類型），都必須精準安排進對應的時段中，絕對不可漏掉任何一個願望！
+2. 智慧天色與營業作息自動重排：請勿盲目照客人打字的先後順序排！你必須根據每個時段的「真實天色（白天／午後夕陽／入夜後）」自動幫客人把活動調配到最合理的時段（例如：海景咖啡廳、水岸戶外活動一定要排在 17:30 天黑前的白天或夕陽時段；泡溫泉適合排在傍晚微涼或入夜；逛夜市、燒肉火鍋晚餐、看夜景一定要排在 18:00 入夜後的時段）。
+3. 鎖定同一個順路生活圈（嚴禁跨區大繞路）：整趟行程必須鎖定在「同一個順路軸線或相鄰生活圈」，車程須控制在合理順路範圍，不可在縣市東西南北亂跳。
+4. 推薦 Google 地圖真實存在的高評價名店：每個時段請提供 1 個「👉 首選推薦」與 2 個同生活圈的「👉 順路備選」，必須是真實存在的知名店家或景點，並在括號內附上具體地區與特色亮點。
+
+【📝 輸出排版格式（請直接輸出以下格式內容，不要加任何開頭問候語或結尾廢話，禁止使用 Markdown 粗體星號 **）】
+【📍 專屬約會企劃：（請取一個浪漫且點出區域與主題的標題）】
+✨ 顧問動線巧思：（請用 2~3 句溫暖專業的口吻，說明你為客人鎖定了哪條順路生活圈、為什麼根據天色與交通方式這樣安排先後順序）
+
+• HH:MM - HH:MM｜（該時段活動主題名稱）
+💡 時段與轉場巧思：（1 句話說明為何此時段天色最適合這項活動，以及如何順路銜接）
+👉 首選推薦：店名或景點名 (具體地區・特色亮點或必吃招牌)
+👉 順路備選：店名或景點名 (具體地區・特色亮點或必吃招牌)
+👉 順路備選：店名或景點名 (具體地區・特色亮點或必吃招牌)
+（請依時段順序完整列出所有時段）`;
+
+                    const combinedKey = _kParts.join('');
+                    const requestBody = JSON.stringify({
+                        contents: [{ role: 'user', parts: [{ text: aiPrompt }] }],
+                        generationConfig: { temperature: 0.75 }
+                    });
+
+                    const trySingleModel = async (endpointUrl, customBody = requestBody) => {
+                        const ctrl = new AbortController();
+                        const tid = setTimeout(() => ctrl.abort(), 15000);
+                        try {
+                            const resp = await fetch(endpointUrl, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: customBody,
+                                signal: ctrl.signal
+                            });
+                            clearTimeout(tid);
+                            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                            const data = await resp.json();
+                            const candidate = data?.candidates?.[0]?.content?.parts?.[0]?.text || data?.output_text;
+                            if (candidate && candidate.trim().length > 30) {
+                                return candidate.replace(/\*\*/g, '').trim();
+                            }
+                            throw new Error('Empty payload');
+                        } catch (err) {
+                            clearTimeout(tid);
+                            throw err;
+                        }
+                    };
+
+                    let resultText = '';
+
+                    const primaryModels = [
+                        'gemini-3.1-flash-lite',
+                        'gemini-3.5-flash',
+                        'gemini-3.7-flash',
+                        'gemini-3.8-flash',
+                        'gemini-2.5-flash-lite',
+                        'gemini-2.5-flash',
+                        'gemma-4-31b-it'
+                    ];
+
+                    const racePromises = primaryModels.map(m =>
+                        trySingleModel(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(combinedKey)}`)
+                    );
+                    racePromises.push(
+                        trySingleModel(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`)
+                    );
+
+                    try {
+                        resultText = await Promise.any(racePromises);
+                    } catch (batchErr) {
+                        try {
+                            const listResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(combinedKey)}`);
+                            if (listResp.ok) {
+                                const listData = await listResp.json();
+                                const availableModels = (listData?.models || [])
+                                    .filter(m => (m.supportedGenerationMethods || []).includes('generateContent') && /gemini|gemma/i.test(m.name))
+                                    .map(m => m.name.replace(/^models\//, ''))
+                                    .filter(m => !primaryModels.includes(m))
+                                    .slice(0, 5);
+                                if (availableModels.length > 0) {
+                                    resultText = await Promise.any(
+                                        availableModels.map(m =>
+                                            trySingleModel(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(combinedKey)}`)
+                                        )
+                                    );
+                                }
+                            }
+                        } catch (listErr) {
+                            console.warn('Dynamic model discovery skipped:', listErr);
+                        }
+                    }
+
+                    if (!resultText) {
+                        throw new Error('AI temporarily busy');
+                    }
+
+                    const extractedNames = [];
+                    const regex = /👉\s*(?:首選推薦|順路備選|選項\d*)：([^\(\（\n]+)/g;
+                    let match;
+                    while ((match = regex.exec(resultText)) !== null) {
+                        const cleanName = match[1].trim();
+                        if (cleanName && cleanName.length >= 2) extractedNames.push(cleanName);
+                    }
+
+                    setItinerary(resultText);
+                    setLastGeneratedText(resultText);
+                    if (extractedNames.length > 0) {
+                        setPastRecommendations(prev => Array.from(new Set([...prev, ...extractedNames])));
+                    }
+                } catch (e) {
+                    console.error("AI Itinerary Error:", e);
+                    showModal('AI 顧問正忙著查地圖 ☕', '剛剛雲端搜尋稍微塞車了，請再點一下「✨ AI 幫我排行程」即可馬上為您產出唷！');
+                } finally {
+                    setIsGeneratingItinerary(false);
+                }
+            };
+
+            const handleAIGenerateItinerary = () => {
+                if (isOverseas) {
+                    showModal('海外行程請自行填寫 ✈️', '選擇「海外」約會時，請直接在行程欄備註目的地與詳細行程計畫唷！💕');
+                    return;
+                }
+
+                if (!bookingStartData) {
+                    showModal('等一下下唷 ☕', '請先在月曆點選「開始時間」，AI 顧問才能為您規劃行程唷！');
+                    return;
+                }
+
+                if (isOtherArea) {
+                    const hasSpecificLocation = /基隆|宜蘭|花蓮|台東|臺東|屏東|南投|澎湖|金門|馬祖|連江|綠島|蘭嶼|小琉球|礁溪|羅東|頭城|蘇澳|冬山|三星|五結|太魯閣|七星潭|瑞穗|池上|關山|鹿野|知本|太麻里|墾丁|恆春|東港|潮州|霧台|埔里|清境|日月潭|溪頭|集集|竹山|車埕|合歡山|阿里山|九份|金瓜石|平溪|十分|縣|市|區|鄉|鎮|村|島|山|湖|潭|港|灣|街|路|宮|寺|園|館|站|夜市|老街|商圈|農場|牧場/.test(itinerary.trim());
+                    if (!itinerary.trim() || !hasSpecificLocation) {
+                        showModal(
+                            '請先備註明確地點 📍',
+                            '選擇「其他地區」時，請先在行程欄寫明「約會縣市或地點」（如：宜蘭礁溪、花蓮市區、墾丁...），AI 才能幫您推薦行程唷！✨',
+                            { closeLabel: '我去填寫地點 ✍️' }
+                        );
+                        return;
+                    }
+                }
+
+                if (!itinerary.trim()) {
+                    showModal(
+                        '溫馨小提醒 ✨',
+                        '請先填寫您期望的行程、地點或約會風格（例如：信義區逛街、下午茶、看電影、悠閒放鬆、微醺浪漫..），AI顧問會推薦合適的店家和景點，為您量身規劃專屬的約會提案✨',
+                        {
+                            closeLabel: '我去填寫行程 ✍️',
+                            actionLabel: '💡 沒有想法幫我推薦 ✨',
+                            onAction: () => {
+                                closeModal();
+                                executeAIGenerateItinerary(true);
+                            }
+                        }
+                    );
+                    return;
+                }
+
+                executeAIGenerateItinerary(false);
+            };
+
+            // Firebase & Data Sync
+            useEffect(() => {
+                const initFb = () => {
+                    if (window.FirebaseLib) {
+                        try {
+                            const { initializeApp, getAuth, signInAnonymously, onAuthStateChanged, getFirestore } = window.FirebaseLib;
+                            const appInst = initializeApp(firebaseConfig); const dbInst = getFirestore(appInst); const authInst = getAuth(appInst);
+                            setDb(dbInst); signInAnonymously(authInst).catch(e => console.warn(e)); onAuthStateChanged(authInst, (u) => setUser(u));
+                        } catch(e) { console.warn("Firebase fallback to local"); }
+                    }
+                };
+                initFb(); window.addEventListener('firebaseready', initFb);
+                return () => window.removeEventListener('firebaseready', initFb);
+            }, []);
+
+            const syncAllData = () => {
+                setBookings(deduplicateBookings(getLocalData('cute_calendar_bookings', [])));
+                setUnavailables(getLocalData('cute_calendar_unavailables', []));
+                setMembers(getLocalData('cute_calendar_members', {}));
+            };
+
+            useEffect(() => {
+                syncAllData();
+                if (!db || !window.FirebaseLib) return;
+                const { collection, query, onSnapshot } = window.FirebaseLib;
+                let unsub1, unsub2, unsub3;
+                try {
+                    unsub1 = onSnapshot(query(collection(db, `artifacts/${appId}/public/data/bookings`)), snap => {
+                        const b = []; snap.forEach(doc => b.push({ id: doc.id, ...doc.data() }));
+                        const mergedList = deduplicateBookings([...getLocalData('cute_calendar_bookings', []), ...b]);
+                        setBookings(mergedList); setLocalData('cute_calendar_bookings', mergedList);
+                    }, () => syncAllData());
+                    unsub2 = onSnapshot(query(collection(db, `artifacts/${appId}/public/data/unavailables`)), snap => {
+                        const u = []; snap.forEach(doc => u.push(doc.id));
+                        setUnavailables(u); setLocalData('cute_calendar_unavailables', u);
+                    }, () => syncAllData());
+                    unsub3 = onSnapshot(query(collection(db, `artifacts/${appId}/public/data/members`)), snap => {
+                        const m = {}; snap.forEach(doc => { m[doc.id] = doc.data(); });
+                        setMembers(m); setLocalData('cute_calendar_members', m);
+                    }, () => syncAllData());
+                } catch (e) { syncAllData(); }
+                return () => { if (unsub1) unsub1(); if (unsub2) unsub2(); if (unsub3) unsub3(); };
+            }, [db, user]);
+
+            const handleImportBackupData = (importedData) => {
+                if (!importedData || typeof importedData !== 'object') {
+                    showModal('導入失敗 ❌', '備份資料格式不正確！');
+                    return;
+                }
+                const importedMembers = importedData.members || {};
+                const importedBookings = Array.isArray(importedData.bookings) ? importedData.bookings : [];
+                const importedUnavailables = Array.isArray(importedData.unavailables) ? importedData.unavailables : [];
+
+                const mergedMembers = { ...members };
+                Object.entries(importedMembers).forEach(([k, v]) => {
+                    const key = (v?.twitter || k || '').toLowerCase();
+                    if (!key) return;
+                    mergedMembers[key] = {
+                        ...mergedMembers[key],
+                        twitter: key,
+                        nickname: v.nickname || mergedMembers[key]?.nickname || '',
+                        isBlacklisted: v.isBlacklisted !== undefined ? v.isBlacklisted : !!mergedMembers[key]?.isBlacklisted,
+                        bookingCount: v.bookingCount || mergedMembers[key]?.bookingCount || 0
+                    };
+                });
+
+                const mergedBookings = deduplicateBookings([...bookings, ...importedBookings]);
+                mergedBookings.forEach(b => {
+                    if (!b || !b.twitter) return;
+                    const key = b.twitter.toLowerCase();
+                    if (!mergedMembers[key]) {
+                        mergedMembers[key] = { twitter: key, nickname: b.nickname || '', isBlacklisted: false };
+                    } else if (!mergedMembers[key].nickname && b.nickname) {
+                        mergedMembers[key].nickname = b.nickname;
+                    }
+                });
+
+                const mergedUnavailables = Array.from(new Set([...unavailables, ...importedUnavailables]));
+
+                setMembers(mergedMembers);
+                setLocalData('cute_calendar_members', mergedMembers);
+                setBookings(mergedBookings);
+                setLocalData('cute_calendar_bookings', mergedBookings);
+                setUnavailables(mergedUnavailables);
+                setLocalData('cute_calendar_unavailables', mergedUnavailables);
+
+                if (db && window.FirebaseLib) {
+                    try {
+                        const { doc, setDoc } = window.FirebaseLib;
+                        Object.entries(mergedMembers).forEach(([k, val]) => {
+                            setDoc(doc(db, `artifacts/${appId}/public/data/members`, k), val, { merge: true }).catch(e => console.warn(e));
+                        });
+                        mergedBookings.forEach(b => {
+                            if (b.id) setDoc(doc(db, `artifacts/${appId}/public/data/bookings`, b.id), b, { merge: true }).catch(e => console.warn(e));
+                        });
+                        mergedUnavailables.forEach(u => {
+                            setDoc(doc(db, `artifacts/${appId}/public/data/unavailables`, u), { markedByAdmin: true }, { merge: true }).catch(e => console.warn(e));
+                        });
+                    } catch (e) { console.warn(e); }
+                }
+
+                showModal('導入成功 🎉', `已成功導入並合併：\n• 會員資料：${Object.keys(mergedMembers).length} 位\n• 約會行程紀錄：${mergedBookings.length} 筆`);
+            };
+
+            const bookedSlotsMap = useMemo(() => {
+                const map = {};
+                bookings.forEach(b => { if (b.status === 'confirmed' || b.status === 'completed') (b.slots || []).forEach(s => { map[s] = b; }); });
+                return map;
+            }, [bookings]);
+
+            const bufferSlotsMap = useMemo(() => {
+                const map = {};
+                bookings.forEach(b => {
+                    if ((b.status === 'confirmed' || b.status === 'completed') && b.date && b.startHour !== undefined && b.duration !== undefined) {
+                        const baseDate = new Date(`${b.date}T00:00:00`);
+                        map[getSlotString(baseDate, b.startHour - 1)] = true; map[getSlotString(baseDate, b.startHour + b.duration)] = true;
+                    }
+                });
+                return map;
+            }, [bookings]);
+
+            const pendingBookings = useMemo(() => deduplicateBookings(bookings.filter(b => b.status === 'pending_review')), [bookings]);
+            const currentMemberData = useMemo(() => {
+                const handle = twitterHandle.trim().replace(/^@/, '').toLowerCase();
+                return handle ? members[handle] : null;
+            }, [twitterHandle, members]);
+
+            const linkedNickname = useMemo(() => {
+                const handle = twitterHandle.trim().replace(/^@/, '').toLowerCase();
+                if (!handle) return '';
+                if (members[handle]?.nickname) return members[handle].nickname;
+                const matchedBooking = [...bookings]
+                    .sort((a, b) => new Date(b.createdAt || b.date || 0) - new Date(a.createdAt || a.date || 0))
+                    .find(b => (b.twitter || '').toLowerCase() === handle && b.nickname);
+                return matchedBooking?.nickname || '';
+            }, [twitterHandle, members, bookings]);
+
+            useEffect(() => {
+                const handle = twitterHandle.trim().replace(/^@/, '').toLowerCase();
+                if (!handle) {
+                    setNickname('');
+                    return;
+                }
+                if (linkedNickname) {
+                    setNickname(linkedNickname);
+                }
+            }, [twitterHandle, linkedNickname]);
+
+            const handleNicknameChange = (val) => {
+                setNickname(val);
+                const handle = twitterHandle.trim().replace(/^@/, '').toLowerCase();
+                if (handle && val.trim()) {
+                    const updatedMembers = {
+                        ...members,
+                        [handle]: {
+                            ...members[handle],
+                            twitter: handle,
+                            nickname: val.trim()
+                        }
+                    };
+                    setMembers(updatedMembers);
+                    setLocalData('cute_calendar_members', updatedMembers);
+                }
+            };
+
+            const completedCount = useMemo(() => {
+                const handle = twitterHandle.trim().replace(/^@/, '').toLowerCase();
+                return handle ? bookings.filter(b => (b.twitter || '').toLowerCase() === handle && b.status === 'completed').length : 0;
+            }, [bookings, twitterHandle]);
+
+            const customerHistory = useMemo(() => {
+                const handle = twitterHandle.trim().replace(/^@/, '').toLowerCase();
+                return handle ? bookings.filter(b => (b.twitter || '').toLowerCase() === handle && b.status === 'completed').sort((a, b) => new Date(b.date) - new Date(a.date)) : [];
+            }, [bookings, twitterHandle]);
+
+            const isVip = completedCount >= 3;
+            const isBlacklisted = currentMemberData?.isBlacklisted || false;
+
+            useEffect(() => {
+                if (!isVip && planType !== 'normal') setPlanType('normal');
+                if ((!isVip || planType !== 'overnight') && isOverseas) setLocation('新北');
+            }, [isVip, planType, isOverseas]);
+
+            const priceInfo = useMemo(() => bookingStartData === null ? null : calculatePrice(bookingStartData.hour, totalHours, isVip, planType), [bookingStartData, totalHours, isVip, planType]);
+
+            const handleDateChange = (offset) => {
+                const d = new Date(selectedDate); d.setDate(d.getDate() + offset); setSelectedDate(d.toLocaleDateString('en-CA'));
+            };
+
+            const checkSlotsAvailability = (startDate, startH, dur) => {
+                const targetSlots = generateSlotsForBooking(startDate, startH, dur);
+                for (let s of targetSlots) { if (bookedSlotsMap[s] || unavailables.includes(s) || bufferSlotsMap[s] || isSystemUnavailable(s)) return false; }
+                return true;
+            };
+
+            const handleSlotClick = async (hour) => {
+                const slotStr = getSlotString(new Date(`${selectedDate}T00:00:00`), hour);
+                if (isAdmin) {
+                    if (bookedSlotsMap[slotStr]) { setSelectedAdminBooking(bookedSlotsMap[slotStr]); return; }
+                    if (isSystemUnavailable(slotStr)) { showModal('提示', '這是系統預設的不開放時段（常態封鎖），不需要手動設定唷！☕'); return; }
+                    try {
+                        const newUnav = unavailables.includes(slotStr) ? unavailables.filter(u => u !== slotStr) : [...unavailables, slotStr];
+                        setUnavailables(newUnav); setLocalData('cute_calendar_unavailables', newUnav);
+                        if (db && window.FirebaseLib) {
+                            const { doc, setDoc, deleteDoc } = window.FirebaseLib; const docRef = doc(db, `artifacts/${appId}/public/data/unavailables`, slotStr);
+                            if (unavailables.includes(slotStr)) await deleteDoc(docRef); else await setDoc(docRef, { markedByAdmin: true });
+                        }
+                    } catch (e) { console.error(e); }
+                    return;
+                }
+                if (bookedSlotsMap[slotStr] || unavailables.includes(slotStr) || bufferSlotsMap[slotStr] || isSystemUnavailable(slotStr)) return;
+                if (checkSlotsAvailability(selectedDate, hour, totalHours)) setBookingStartData({ date: selectedDate, hour: hour });
+                else showModal('哎呀！', `您選擇的時數往後推算會遇到不開放時段唷，請重新選擇～☕`);
+            };
+
+            useEffect(() => {
+                if (bookingStartData !== null && !isAdmin) {
+                    if (!checkSlotsAvailability(bookingStartData.date, bookingStartData.hour, totalHours)) {
+                        setBookingStartData(null); showModal('提示', `因為更改了預約時數，原先選擇的時段有衝突，請重新選擇開始時間哦！☕`);
+                    }
+                }
+            }, [totalHours]);
+
+            const handleBookingSubmit = () => {
+                const handle = twitterHandle.trim().replace(/^@/, '').toLowerCase();
+                const cleanNick = nickname.trim();
+                if (!handle) return showModal('等一下！', '請填寫推特帳號才能聯繫到您唷～');
+                if (!cleanNick) return showModal('等一下！', '請填寫暱稱（或 LINE 名稱），讓小屁孩記得您是誰唷～💕');
+                if (isBlacklisted) return showModal('抱歉', '系統無法接受您的預約，若有疑問請聯繫官方客服。');
+                if (bookingStartData === null) return showModal('等一下！', '還沒點選月曆上的「約會開始時間」唷！⏰');
+                if (!itinerary.trim()) return showModal('等一下！', '請填寫期望的約會行程細節唷～📝');
+                if (!bankAccountLast5 || bankAccountLast5.length < 5) return showModal('等一下！', '請填寫完整的匯款帳號「後五碼」唷！💳');
+                if (!checkSlotsAvailability(bookingStartData.date, bookingStartData.hour, totalHours)) {
+                    setBookingStartData(null); return showModal('哎呀！', '這個時段剛剛被搶走或不開放了，請重選唷！🥲');
+                }
+
+                const bookingId = 'b_' + Date.now();
+                const targetSlots = generateSlotsForBooking(bookingStartData.date, bookingStartData.hour, totalHours);
+                const bookingData = {
+                    id: bookingId, twitter: handle, nickname: cleanNick, date: bookingStartData.date, startHour: bookingStartData.hour,
+                    duration: totalHours, planType: planType, slots: targetSlots, status: 'pending_review',
+                    location: location, transportation: transportation, travelFee: travelFee, itinerary: itinerary.trim(),
+                    priceInfo: priceInfo, bankAccountLast5: bankAccountLast5, createdAt: new Date().toISOString()
+                };
+
+                const planName = planType === 'overnight' ? '多日伴遊約會💕' : planType === 'cuddle' ? '純抱抱睡' : '一般純約會';
+                const travelFeeDisplay = isExtraTravelFee ? '另計' : `$${travelFee}`;
+                const grandTotal = priceInfo.total + travelFee;
+                const summary = `【預約確認信💌】\n推特帳號：@${handle}\n暱稱/LINE：${cleanNick}\n預約日期：${bookingStartData.date}\n開始時間：${String(bookingStartData.hour).padStart(2, '0')}:00\n預約時數：${totalHours} 小時\n預約方案：${planName}\n約會地點：${location}\n交通方式：${transportation}\n\n費用總計：$${grandTotal}${isExtraTravelFee ? ' (車馬費另計)' : ''}\n車馬費：${travelFeeDisplay}\n應繳定金(含車馬)：$${depositAmount}${isExtraTravelFee ? ' (車馬費另計)' : ''}\n\n行程細節：\n${itinerary.trim()}\n\n匯款資訊 (請在預約審核完成後匯款)：\n台北富邦銀行 (012) 81680004182967\n匯款帳號後五碼：${bankAccountLast5}\n\n請確認以上資訊無誤後傳送本訊息！💕`;
+
+                setPendingBookingPayload({ bookingData, handle, cleanNick, summary, hasBeenSaved: false, hasSentEmail: false });
+                setBookingSuccessData(summary); setIsCopied(false);
+            };
+
+            const handleCopyText = () => {
+                if (!bookingSuccessData) return;
+                try {
+                    const tempInput = document.createElement("textarea"); tempInput.value = bookingSuccessData;
+                    tempInput.style.position = "fixed"; tempInput.style.left = "-9999px"; document.body.appendChild(tempInput);
+                    tempInput.select(); tempInput.setSelectionRange(0, 99999); document.execCommand("copy"); document.body.removeChild(tempInput);
+                    setIsCopied(true); alert('✅ 已複製確認信！請點【步驟二】打開 LINE 貼上傳送 ☕');
+                } catch (e) { alert('複製失敗，請長按下方文字全選複製喔！'); }
+            };
+
+            const handleStep2Click = () => {
+                if (!pendingBookingPayload) return;
+                const { bookingData, handle, cleanNick, summary } = pendingBookingPayload;
+
+                if (!pendingBookingPayload.hasSentEmail) {
+                    pendingBookingPayload.hasSentEmail = true;
+                    const emailMsg = summary || bookingSuccessData;
+                    if (emailMsg) {
+                        try { emailjs.send('service_zsq6x49', 'template_xipok58', { message: emailMsg }, 'YeX-KH7gBNjI3Bbx6').catch(error => console.warn(error)); } catch(err) { console.warn(err); }
+                    }
+                }
+
+                if (!pendingBookingPayload.hasBeenSaved) {
+                    pendingBookingPayload.hasBeenSaved = true;
+                    const updatedBookings = deduplicateBookings([...getLocalData('cute_calendar_bookings', []), bookingData]);
+                    setBookings(updatedBookings); setLocalData('cute_calendar_bookings', updatedBookings);
+                    const updatedMembers = {
+                        ...members,
+                        [handle]: {
+                            ...members[handle],
+                            twitter: handle,
+                            nickname: cleanNick || members[handle]?.nickname || '',
+                            bookingCount: members[handle]?.bookingCount || 0
+                        }
+                    };
+                    setMembers(updatedMembers); setLocalData('cute_calendar_members', updatedMembers);
+                    if (db && window.FirebaseLib) {
+                        try {
+                            const { doc, setDoc } = window.FirebaseLib;
+                            setDoc(doc(db, `artifacts/${appId}/public/data/bookings`, bookingData.id), bookingData).catch(e => console.warn(e));
+                            setDoc(doc(db, `artifacts/${appId}/public/data/members`, handle), { twitter: handle, nickname: cleanNick }, { merge: true }).catch(e => console.warn(e));
+                        } catch (e) { console.warn(e); }
+                    }
+                }
+            };
+
+            const resetAllToHome = () => {
+                setBookingSuccessData(null); setPendingBookingPayload(null); setIsCopied(false);
+                setBookingStartData(null); setItinerary(''); setBankAccountLast5('');
+            };
+
+            const summaryText = bookingSuccessData || '';
+            const lineOaMsgUrl = `https://line.me/R/oaMessage/@tte0624e/?${encodeURIComponent(summaryText)}`;
+            const lineShareUrl = `https://line.me/R/msg/text/?${encodeURIComponent(summaryText)}`;
+            const lineProfileUrl = `https://line.me/R/ti/p/@tte0624e`;
+            const priceRenderKey = `${location}_${transportation}_${totalHours}_${planType}_${bookingStartData?.hour}_${isVip}`;
+
+            return (
+                <div className="max-w-4xl mx-auto p-3 md:p-6 pb-24 font-sans text-[#382E2B]">
+                    <div className="text-center mb-6 relative pt-4">
+                        <h1 className="text-3xl md:text-4xl font-extrabold text-[#382E2B] tracking-wide pb-1 flex items-center justify-center gap-2">
+                            <span>☁️</span> 小屁孩的純約會行事曆 <span>☕</span>
+                        </h1>
+                        <p className="text-[#7A6E65] text-xs md:text-sm font-medium mt-1">牽手、逛街、吃飯、看電影... 陪你度過溫暖時光 ✨</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="cloud-card flex flex-col h-full">
+                            {isAdmin && <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#B8735C] text-white px-4 py-1 rounded-full text-xs font-bold shadow-sm z-10">🛠️ 管理員模式啟用中</div>}
+                            <div className="flex justify-between items-center mb-5">
+                                <button onClick={() => handleDateChange(-1)} className="w-9 h-9 flex items-center justify-center bg-[#FAF4EB] border border-[#EAE1D7] rounded-full text-[#8C5E3C] hover:bg-[#F3E7D7] transition-all">◀</button>
+                                <div className="relative group flex items-center justify-center cursor-pointer bg-[#FAF4EB] px-5 py-2 border border-[#E7D4BF] foam-shape">
+                                    <h2 className="text-xl md:text-2xl font-extrabold text-[#382E2B] group-hover:text-[#C89B7B] transition-colors tracking-wide">{selectedDate}</h2>
+                                    <input type="date" value={selectedDate} onChange={(e) => { if(e.target.value) setSelectedDate(e.target.value); }} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                                </div>
+                                <button onClick={() => handleDateChange(1)} className="w-9 h-9 flex items-center justify-center bg-[#FAF4EB] border border-[#EAE1D7] rounded-full text-[#8C5E3C] hover:bg-[#F3E7D7] transition-all">▶</button>
+                            </div>
+
+                            <div className="mb-4 text-xs text-center flex justify-center gap-4 text-[#7A6E65]">
+                                <span className="flex items-center gap-1.5"><div className="w-3.5 h-3.5 bg-white border-2 border-[#C89B7B] rounded-full"></div> 開放</span>
+                                <span className="flex items-center gap-1.5"><div className="w-3.5 h-3.5 bg-[#EAE2D8] rounded-full"></div> 已預約</span>
+                                <span className="flex items-center gap-1.5"><div className="w-3.5 h-3.5 bg-[#F7EFE9] border border-[#EFE3DB] rounded-full"></div> 不開放</span>
+                            </div>
+
+                            <div className="grid grid-cols-4 gap-3 flex-grow overflow-y-auto p-1 pb-2">
+                                {Array.from({ length: 24 }).map((_, h) => {
+                                    const slotStr = getSlotString(new Date(`${selectedDate}T00:00:00`), h);
+                                    const bookingRecord = bookedSlotsMap[slotStr];
+                                    const isBooked = !!bookingRecord; const isCompleted = bookingRecord?.status === 'completed';
+                                    const systemBlocked = isSystemUnavailable(slotStr);
+                                    const isUnavailable = unavailables.includes(slotStr) || !!bufferSlotsMap[slotStr] || systemBlocked;
+
+                                    let isSelected = false;
+                                    if (!isAdmin && bookingStartData !== null) {
+                                        const slotTimestamp = new Date(`${selectedDate}T00:00:00`).getTime() + h * 3600000;
+                                        const startTimestamp = new Date(`${bookingStartData.date}T00:00:00`).getTime() + bookingStartData.hour * 3600000;
+                                        if (slotTimestamp >= startTimestamp && slotTimestamp < startTimestamp + totalHours * 3600000) isSelected = true;
+                                    }
+
+                                    let bgClass = "bg-white border-[#EAE1D7] "; let textClass = "text-[#5A4A42]"; let containerClass = "relative z-10 w-full h-11 flex items-center justify-center font-extrabold text-sm transition-all duration-200 group ";
+                                    if (isSelected) { bgClass = "bg-[#C19A7E] border-[#C19A7E] shadow-md"; textClass = "text-white"; containerClass += "scale-[1.03]"; }
+                                    else if (isBooked) {
+                                        bgClass = isCompleted ? "bg-[#EAE4DC] border-[#E0D8CE] " : "bg-[#F0ECE7] border-[#E5DFD7] stripe-pattern ";
+                                        textClass = "text-[#A3968C]"; containerClass += isAdmin ? "hover:scale-105 cursor-pointer " : "cursor-not-allowed ";
+                                    }
+                                    else if (isUnavailable) { bgClass = "bg-[#F7EFE9] border-[#EFE3DB] "; textClass = "text-[#C2A396]"; containerClass += isAdmin && !systemBlocked ? "hover:scale-105 cursor-pointer " : "cursor-not-allowed "; }
+                                    else { containerClass += "cursor-pointer hover:-translate-y-0.5"; }
+
+                                    return (
+                                        <button key={h} onClick={() => handleSlotClick(h)} className={containerClass}>
+                                            <div className={`mild-wave-bg border-2 ${bgClass}`}></div>
+                                            <span className={textClass}>{String(h).padStart(2, '0')}:00</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {bookingSuccessData ? (
+                            <div className="cloud-card flex flex-col gap-4 text-center">
+                                <h2 className="text-2xl font-extrabold text-[#382E2B] flex items-center justify-center gap-2"><span>☁️</span> 預約確認信已生成 <span>💌</span></h2>
+                                <div className="bg-[#FAF7F2] p-4 border border-[#EAE1D7] text-left text-xs text-[#7A6E65] space-y-1.5 leading-relaxed relative z-10 foam-shape">
+                                    <div className="mild-wave-bg border border-[#EAE1D7] bg-[#FAF7F2]"></div>
+                                    <p className="font-bold text-[#8C5E3C] text-sm mb-1 relative z-10">📌 只要兩步驟即可完成預約：</p>
+                                    <p className="relative z-10"><b>步驟一：</b> 點擊下方按鈕複製確認信。</p>
+                                    <p className="relative z-10"><b>步驟二：</b> 點擊前往 LINE 貼上傳送給小屁孩。</p>
+                                    <p className="text-[#B8735C] font-bold mt-1 relative z-10">※ 提醒：待小屁孩審核確認後再進行匯款，核準後時段才會正式鎖定唷！</p>
+                                </div>
+                                <div className="wavy-input-group p-3 h-40">
+                                    <textarea readOnly value={bookingSuccessData} className="text-left text-xs text-[#382E2B] h-full overflow-y-auto resize-none outline-none select-all font-mono leading-relaxed"></textarea>
+                                </div>
+                                <div className="flex flex-col gap-3 mt-2">
+                                    <button onClick={handleCopyText} className="relative z-10 w-full h-12 font-bold text-sm transition-all flex items-center justify-center gap-2 group">
+                                        <div className={`mild-wave-bg border-2 shadow-sm ${isCopied ? 'bg-[#849B89] border-[#849B89]' : 'bg-[#FAF4EB] border-[#E7D4BF] group-hover:bg-[#F3E7D7]'}`}></div>
+                                        <span className={isCopied ? 'text-white' : 'text-[#8C5E3C]'}>{isCopied ? '✅ 已成功複製預約信！' : '📋 步驟一：一鍵複製預約確認信'}</span>
+                                    </button>
+                                    <a href={lineOaMsgUrl} onClick={handleStep2Click} target="_blank" rel="noopener noreferrer" className="relative z-10 w-full h-12 font-bold text-base transition-all flex items-center justify-center gap-2 active:scale-95 no-underline cursor-pointer group">
+                                        <div className="mild-wave-bg bg-[#00B900] border-2 border-[#00B900] group-hover:bg-green-600 shadow-sm"></div>
+                                        <span className="text-white">💬 步驟二：前往 LINE 並傳送確認信</span>
+                                    </a>
+                                    <div className="flex flex-col gap-1 text-center mt-2 p-3 relative z-10">
+                                        <div className="mild-wave-bg bg-[#FAF7F2] border border-[#EAE1D7]"></div>
+                                        <p className="text-[11px] text-[#A3968C] font-bold mb-1 relative z-10">若上方按鈕未跳轉，請點備用連結：</p>
+                                        <a href={lineOaMsgUrl} target="_blank" rel="noopener noreferrer" onClick={handleStep2Click} className="text-xs text-[#8C5E3C] font-bold underline py-0.5 relative z-10">🔗 備用連結 1：開啟 LINE 自動帶入文字</a>
+                                        <a href={lineShareUrl} target="_blank" rel="noopener noreferrer" onClick={handleStep2Click} className="text-xs text-[#8C5E3C] font-bold underline py-0.5 relative z-10">🔗 備用連結 2：分享至 LINE 聊天室</a>
+                                        <a href={lineProfileUrl} target="_blank" rel="noopener noreferrer" onClick={handleStep2Click} className="text-xs text-[#8C5E3C] font-bold underline py-0.5 relative z-10">🔗 備用連結 3：直接開啟官方帳號</a>
+                                    </div>
+                                    <button onClick={resetAllToHome} className="relative z-10 w-full h-11 mt-1 text-[#382E2B] font-bold text-xs flex items-center justify-center gap-2 group">
+                                        <div className="mild-wave-bg bg-[#EAE1D7] border border-[#EAE1D7] group-hover:bg-[#DED2C6]"></div><span>🏠 返回預約首頁（重新預約 / 修改內容）</span>
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col gap-6">
+                                <div className="cloud-card text-xs text-[#382E2B] leading-relaxed">
+                                    <div className="flex justify-between items-center mb-2.5 flex-wrap gap-1">
+                                        <h3 className="font-extrabold text-base flex items-center gap-1.5 text-[#382E2B]"><span className="text-lg">☕</span> 價目表與須知</h3>
+                                        <div className="flex items-center gap-1.5">
+                                            <button type="button" onClick={() => setShowRulesModal(true)} className="text-[11px] bg-[#FBF0EF] text-[#D98880] border border-[#F3D7D5] font-bold px-3 py-1.5 hover:bg-[#D98880] hover:text-white transition shadow-sm foam-shape">⚠️ 約會規則詳閱</button>
+                                        </div>
+                                    </div>
+                                    <ul className="space-y-1.5 list-disc list-inside text-[#7A6E65] font-medium pl-0.5">
+                                        <li>基本鐘點費：<span className="font-extrabold text-[#C89B7B]">$1000/hr</span> (2小時起，限公開場所)</li>
+                                        <li>4 小時以上：<span className="font-bold text-[#382E2B]">9 折</span></li>
+                                        <li>半日 (6 小時)：<span className="font-bold text-[#382E2B]">$5200</span></li>
+                                        <li>一日 (12 小時)：<span className="font-bold text-[#382E2B]">$8800</span></li>
+                                        <li>🌙 夜間時段 (00:00~09:59)：每小時加計 <span className="text-[#B8735C] font-bold">20%</span></li>
+                                        <li>🚗 外縣市車馬費：雙北以外酌收高鐵來回票價，<span className="font-bold text-[#B8735C]">併入定金收取</span></li>
+                                    </ul>
+
+                                    <div className="cloud-vip-card">
+                                        <div className="font-extrabold text-[#8C5E3C] flex items-center gap-1 mb-1 text-xs">👑 成為小屁孩的大乾爹 ✨</div>
+                                        <p className="text-[11px] text-[#7A6E65] leading-relaxed mb-1">約會成功完成達3次以上自動升級！享有鐘點<b>8折</b>、半日<b>75折</b>、一日<b>66折</b>優惠，並且解鎖【純抱抱睡】和【多日伴遊約會】！💕</p>
+                                        <p className="text-[10px] text-[#A3968C] italic">* VIP 若跨夜間時段，該時段無折扣，以原價計算。</p>
+                                        {isVip && (
+                                            <div className="mt-2.5 pt-2.5 border-t border-[#E7D4BF]/60">
+                                                <div className="text-xs text-[#C89B7B] font-bold mb-1">✨ 您已解鎖大乾爹專屬方案：</div>
+                                                <ul className="text-[11px] space-y-1 list-disc list-inside text-[#7A6E65] leading-relaxed">
+                                                    <li>純抱抱睡：鐘點費加成 20%，滿 12 小時打 8 折。</li>
+                                                    <li>多日伴遊約會：每 24 小時鐘點費原價打 75 折，加鐘以 8 折計（並可選海外地區）。</li>
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="cloud-card flex flex-col gap-4 flex-grow">
+                                    <div>
+                                        <div className="grid grid-cols-2 gap-3 items-end">
+                                            <div>
+                                                <label className="block text-xs font-bold text-[#8C5E3C] mb-1.5 whitespace-nowrap">推特帳號 (會員綁定)</label>
+                                                <div className="wavy-input-group px-3 py-2.5 h-11">
+                                                    <span className="text-[#A3968C] text-sm mr-1 mt-0.5">@</span>
+                                                    <input type="text" value={twitterHandle} onChange={(e) => setTwitterHandle(e.target.value)} className="text-xs md:text-sm mt-0.5" placeholder="推特帳號" />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-[#8C5E3C] mb-1.5 whitespace-nowrap">暱稱 (或 LINE 名稱)</label>
+                                                <div className="wavy-input-group px-3.5 py-2.5 h-11">
+                                                    <input type="text" value={nickname} onChange={(e) => handleNicknameChange(e.target.value)} className="text-xs md:text-sm mt-0.5" placeholder="您的稱呼 / LINE 名稱" />
+                                                    {linkedNickname && nickname === linkedNickname && (
+                                                        <span className="text-[10px] text-[#849B89] font-bold whitespace-nowrap ml-1 shrink-0">✓已連動</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {twitterHandle && (
+                                            <div className="flex items-center gap-2 mt-2">
+                                                <div className={`text-xs font-bold ${isVip ? 'text-[#C89B7B]' : 'text-[#7A6E65]'}`}>累積完成約會：{completedCount} 次 {isVip && ' (已享有 VIP 優惠 👑)'}</div>
+                                                {customerHistory.length > 0 && (
+                                                    <button onClick={() => setShowHistoryModal(true)} className="relative z-10 text-[11px] text-[#8C5E3C] font-bold px-3 py-1.5 group ml-auto">
+                                                        <div className="mild-wave-bg bg-[#FAF4EB] border border-[#E7D4BF] group-hover:bg-[#F3E7D7] shadow-sm"></div><span>📜 查看紀錄</span>
+                                                    </button>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex gap-3">
+                                        <div className="w-1/2">
+                                            <label className="block text-xs font-bold text-[#8C5E3C] mb-1.5">選擇方案</label>
+                                            <div className="wavy-input-group px-3 py-1.5 h-11">
+                                                <select value={planType} onChange={(e) => setPlanType(e.target.value)} className="text-xs font-medium cursor-pointer">
+                                                    <option value="normal">一般純約會</option>
+                                                    {isVip && <option value="cuddle">純抱抱睡</option>}
+                                                    {isVip && <option value="overnight">多日伴遊約會💕</option>}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="w-1/2">
+                                            <label className="block text-xs font-bold text-[#8C5E3C] mb-1.5">預約時數</label>
+                                            <div className="flex gap-2">
+                                                {planType === 'overnight' && (
+                                                    <div className="wavy-input-group px-2 py-1.5 h-11 w-1/2">
+                                                        <select value={selectedDays} onChange={(e) => setSelectedDays(parseInt(e.target.value))} className="text-xs cursor-pointer">
+                                                            {Array.from({ length: 7 }).map((_, i) => (<option key={i+1} value={i+1}>{i+1} 天</option>))}
+                                                        </select>
+                                                    </div>
+                                                )}
+                                                <div className={`wavy-input-group px-2 py-1.5 h-11 ${planType === 'overnight' ? 'w-1/2' : 'w-full'}`}>
+                                                    <select value={selectedDuration} onChange={(e) => setSelectedDuration(parseInt(e.target.value))} className="text-xs cursor-pointer">
+                                                        {planType === 'overnight'
+                                                            ? Array.from({ length: 24 }).map((_, i) => (<option key={i} value={i}>{i} 小時</option>))
+                                                            : planType === 'normal'
+                                                                ? Array.from({ length: 17 }).map((_, i) => (<option key={i+2} value={i+2}>{i+2} 小時</option>))
+                                                                : Array.from({ length: 23 }).map((_, i) => (<option key={i+2} value={i+2}>{i+2} 小時</option>))
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="p-4 relative z-10 mt-1">
+                                        <div className="mild-wave-bg bg-[#FDF4E8] border border-[#EAE1D7]"></div>
+                                        <div className="flex gap-3 relative z-10">
+                                            <div className="w-1/2">
+                                                <label className="block text-[11px] font-bold text-[#8C5E3C] mb-1">📍 約會縣市</label>
+                                                <div className="wavy-input-group px-2.5 py-1 h-10">
+                                                    <select value={location} onChange={(e) => setLocation(e.target.value)} className="text-xs cursor-pointer">
+                                                        {Object.keys(thsrFares).map(city => (<option key={city} value={city}>{city}</option>))}
+                                                        <option value="其他地區（請於行程欄位備註）">其他地區（請於行程欄位備註）</option>
+                                                        {isVip && planType === 'overnight' && <option value="海外（請於行程欄位備註）">海外（請於行程欄位備註）</option>}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div className="w-1/2">
+                                                <label className="block text-[11px] font-bold text-[#8C5E3C] mb-1">🚗 交通方式</label>
+                                                <div className="wavy-input-group px-2.5 py-1 h-10">
+                                                    <select value={transportation} onChange={(e) => setTransportation(e.target.value)} className="text-xs cursor-pointer">
+                                                        {isOverseas ? (
+                                                            <option value="帶小屁孩搭飛機（車馬費另計）">帶小屁孩搭飛機（車馬費另計）</option>
+                                                        ) : isOtherArea ? (
+                                                            <>
+                                                                <option value="召喚小屁孩（車馬費另計）">召喚小屁孩（車馬費另計）</option>
+                                                                <option value="開車接送">開車接送</option>
+                                                            </>
+                                                        ) : isGreaterTaipei ? (
+                                                            <>
+                                                                <option value="大眾交通（限雙北地區）">大眾交通（限雙北地區）</option>
+                                                                <option value="開車接送">開車接送</option>
+                                                                <option value="機車接送">機車接送</option>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <option value="召喚小屁孩到高鐵站（再轉大眾or汽機車）">召喚小屁孩到高鐵站（再轉大眾or汽機車）</option>
+                                                                <option value="開車接送">開車接送</option>
+                                                                <option value="機車接送">機車接送</option>
+                                                            </>
+                                                        )}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {showThsrFareButton && (
+                                            <div className="relative z-10 mt-3 pt-2.5 border-t border-[#E7D4BF]/70 flex justify-end">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowThsrModal(true)}
+                                                    className="foam-shape text-xs bg-white text-[#8C5E3C] border border-[#E7D4BF] font-bold px-3.5 py-1.5 hover:bg-[#C89B7B] hover:text-white transition shadow-sm flex items-center gap-1"
+                                                >
+                                                    <span>🚄</span> 查看高鐵票價表
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <div className="flex justify-between items-end mb-2 mt-1">
+                                            <label className="block text-xs font-bold text-[#8C5E3C]">行程細節與備註</label>
+                                            <button type="button" onClick={handleAIGenerateItinerary} disabled={isGeneratingItinerary || isOverseas} className="relative z-10 text-xs px-3 py-1.5 flex items-center gap-1 font-bold transition-all group disabled:opacity-60 disabled:cursor-not-allowed">
+                                                <div className={`mild-wave-bg border shadow-sm ${isOverseas ? 'bg-[#B5A89D] border-[#B5A89D]' : 'bg-[#C89B7B] border-[#C89B7B] group-hover:bg-[#B58462]'}`}></div>
+                                                <span className="text-white relative z-10">
+                                                    {isOverseas ? '🔒 海外請自行填寫行程' : isGeneratingItinerary ? '✨ AI 搜尋規劃中...' : '✨ AI 幫我排行程'}
+                                                </span>
+                                            </button>
+                                        </div>
+                                        <div className="wavy-input-group p-3">
+                                            <textarea
+                                                value={itinerary}
+                                                onChange={(e) => setItinerary(e.target.value)}
+                                                rows="6"
+                                                className="text-xs leading-relaxed resize-none h-full"
+                                                placeholder={
+                                                    isOverseas
+                                                        ? "✈️ 請備註海外國家／城市，並自行填寫完整約會行程 📝"
+                                                        : isOtherArea
+                                                            ? "📍 請先註明約會縣市／地點，並填寫期望的約會行程（越具體越好唷 📝）"
+                                                            : "請填寫期望的詳細約會行程（越具體越好唷 📝）"
+                                                }
+                                            ></textarea>
+                                        </div>
+                                    </div>
+
+                                    {priceInfo && (
+                                        <div className="mt-auto p-4 relative z-10 mt-2">
+                                            <div className="mild-wave-bg bg-[#FAF4EB] border border-[#E7D4BF]/60"></div>
+                                            <div key={priceRenderKey} className="safari-repaint-fix">
+                                                <div className="flex justify-between items-center mb-1 text-xs">
+                                                    <span className="text-[#7A6E65]">{`基本費用 (${totalHours}小時)`}</span>
+                                                    <span>{`$${priceInfo.basePrice}`}</span>
+                                                </div>
+                                                {priceInfo.midnightCount > 0 && (
+                                                    <div className="flex justify-between items-center mb-1 text-xs text-[#B8735C]">
+                                                        <span>{`夜間時段差額/加成 (${priceInfo.midnightCount}小時)`}</span>
+                                                        <span>{`+$${priceInfo.midnightSurcharge}`}</span>
+                                                    </div>
+                                                )}
+                                                {travelFee > 0 && (
+                                                    <div className="flex justify-between items-center mb-1 text-xs text-[#8C5E3C] font-bold">
+                                                        <span>車馬費 (高鐵來回)</span>
+                                                        <span>{`+$${travelFee}`}</span>
+                                                    </div>
+                                                )}
+                                                {isExtraTravelFee && (
+                                                    <div className="flex justify-between items-center mb-1 text-xs text-[#8C5E3C] font-bold">
+                                                        <span>{`車馬費 (${location.replace('（請於行程欄位備註）', '')})`}</span>
+                                                        <span>車馬費另計</span>
+                                                    </div>
+                                                )}
+                                                {priceInfo.isVip && (
+                                                    <div className="text-[11px] text-[#C89B7B] text-right font-bold mb-1.5">已套用 VIP 專屬折扣/方案 ✨</div>
+                                                )}
+                                                <div className="flex justify-between items-end border-t border-[#E7D4BF] pt-2 mt-2">
+                                                    <span className="font-bold text-[#382E2B] text-xs">總計金額</span>
+                                                    <span className="text-2xl font-extrabold text-[#C89B7B] leading-tight">
+                                                        {`$${priceInfo.total + travelFee}`}
+                                                    </span>
+                                                </div>
+                                                <div className="mt-3 pt-3 border-t border-[#E7D4BF]">
+                                                    <div className="flex justify-between items-center text-xs font-bold text-[#382E2B] mb-1">
+                                                        <span>💳 應付定金 (含車馬費)</span>
+                                                        <span className="text-base text-[#8C5E3C]">
+                                                            {`$${depositAmount}${isExtraTravelFee ? ' (車馬費另計)' : ''}`}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="relative z-20 text-xs text-[#7A6E65] p-4 mt-2 leading-relaxed">
+                                                <div className="mild-wave-bg bg-white border border-[#EAE1D7]"></div>
+                                                <p className="relative z-10 mb-0.5 font-bold text-[#382E2B]">匯款資訊 (請在預約審核完成後匯款)：</p>
+                                                <p className="relative z-10">台北富邦銀行 (012)</p>
+                                                <p className="relative z-10 font-mono font-bold text-sm text-[#8C5E3C] tracking-widest my-1">81680004182967</p>
+                                                <div className="relative z-10 border-t border-[#EAE1D7] pt-2 mt-2">
+                                                    <label className="block text-[#8C5E3C] font-bold mb-2">請填寫匯款帳號後五碼 (必填) 👇</label>
+                                                    <div className="wavy-input-group px-3 py-1.5 h-11">
+                                                        <input type="text" maxLength="5" value={bankAccountLast5} onChange={(e) => setBankAccountLast5(e.target.value.replace(/\D/g, ''))} className="text-center font-mono font-bold text-[#8C5E3C] tracking-widest text-base" placeholder="輸入帳號後 5 碼" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <button onClick={handleBookingSubmit} className="relative z-10 w-full mt-2 h-14 flex items-center justify-center font-bold text-base transition-all active:scale-95 group">
+                                        <div className="mild-wave-bg bg-[#C89B7B] border-2 border-[#C89B7B] group-hover:bg-[#B58462] shadow-sm"></div>
+                                        <span className="text-white relative z-10">確認送出並生成確認信 💌</span>
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="fixed bottom-4 left-4 right-4 flex flex-wrap items-center gap-2 z-50 pointer-events-none">
+                        <button onClick={() => { if (isAdmin) setIsAdmin(false); else setShowAdminLogin(true); }} className={`pointer-events-auto text-xs px-3.5 py-2 shadow transition-all font-bold foam-shape ${isAdmin ? 'bg-[#B8735C] text-white' : 'bg-white text-[#7A6E65] border border-[#EAE1D7] opacity-60 hover:opacity-100'}`}>
+                            {isAdmin ? "🔒 關閉管理員" : "管理員登入"}
+                        </button>
+                        {isAdmin && (
+                            <>
+                                <button onClick={() => setShowPendingModal(true)} className={`pointer-events-auto text-xs px-3.5 py-2 shadow transition-all font-bold flex items-center gap-1.5 foam-shape ${pendingBookings.length > 0 ? 'bg-[#B8735C] text-white pulse-badge' : 'bg-[#FAF4EB] text-[#8C5E3C] border border-[#E7D4BF]'}`}>
+                                    <span>🔔</span> 新預約通知
+                                    {pendingBookings.length > 0 && <span className="bg-white text-[#B8735C] text-[10px] px-1.5 py-0.2 rounded-full font-extrabold">{pendingBookings.length}</span>}
+                                </button>
+                                <button onClick={() => setShowMembersModal(true)} className="pointer-events-auto text-xs px-3.5 py-2 shadow transition-all bg-[#8C5E3C] text-white font-bold hover:bg-[#724B2E] foam-shape">
+                                    👥 會員管理 / 匯出導入
+                                </button>
+                            </>
+                        )}
+                    </div>
+
+                    {showAdminLogin && (
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#382E2B]/40 backdrop-blur-sm p-4">
+                            <div className="bg-white rounded-3xl p-6 w-full max-w-xs border-2 border-[#EAE1D7] text-center shadow-2xl">
+                                <h3 className="text-lg font-bold text-[#382E2B] mb-4">輸入管理員密碼</h3>
+                                <input type="password" value={adminPwd} onChange={(e) => setAdminPwd(e.target.value)} className="wavy-input-group w-full p-3 mb-4 text-center tracking-widest font-mono text-lg" placeholder="••••" autoFocus />
+                                <div className="flex gap-2">
+                                    <button onClick={() => { setShowAdminLogin(false); setAdminPwd(''); }} className="foam-shape w-1/2 py-2.5 bg-[#EAE1D7] text-[#382E2B] font-bold text-xs">取消</button>
+                                    <button onClick={() => { if (_h(adminPwd) === 1538181) { setIsAdmin(true); setShowAdminLogin(false); setAdminPwd(''); } else { showModal('錯誤', '密碼錯誤！'); setAdminPwd(''); } }} className="foam-shape w-1/2 py-2.5 bg-[#C89B7B] text-white font-bold text-xs">解鎖</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    <AdminPendingModal
+                        isOpen={showPendingModal} pendingBookings={pendingBookings} members={members} onRefresh={syncAllData} onClose={() => setShowPendingModal(false)}
+                        onApprove={(b) => {
+                            const baseList = deduplicateBookings([...bookings, ...getLocalData('cute_calendar_bookings', [])]);
+                            const updated = baseList.map(item => isSameBooking(item, b) ? { ...item, status: 'confirmed' } : item);
+                            setBookings(updated); setLocalData('cute_calendar_bookings', updated);
+                            if (b.nickname) {
+                                const hKey = (b.twitter || '').toLowerCase();
+                                const updatedMembers = { ...members, [hKey]: { ...members[hKey], twitter: hKey, nickname: b.nickname } };
+                                setMembers(updatedMembers); setLocalData('cute_calendar_members', updatedMembers);
+                                try {
+                                    if (db && window.FirebaseLib && hKey) {
+                                        window.FirebaseLib.setDoc(window.FirebaseLib.doc(db, `artifacts/${appId}/public/data/members`, hKey), { twitter: hKey, nickname: b.nickname }, { merge: true }).catch(e => console.warn(e));
+                                    }
+                                } catch (err) { console.warn(err); }
+                            }
+                            try {
+                                if (db && window.FirebaseLib && b.id) {
+                                    window.FirebaseLib.updateDoc(window.FirebaseLib.doc(db, `artifacts/${appId}/public/data/bookings`, b.id), { status: 'confirmed' }).catch(e => console.warn(e));
+                                }
+                            } catch (err) { console.warn(err); }
+                            showModal('審核通過 ✨', `已同意 @${b.twitter}${b.nickname ? ` (${b.nickname})` : ''} 的約會！該時段已在行事曆鎖定為灰底。`);
+                        }}
+                        onReject={(b) => {
+                            const baseList = deduplicateBookings([...bookings, ...getLocalData('cute_calendar_bookings', [])]);
+                            const updated = baseList.filter(item => !isSameBooking(item, b));
+                            setBookings(updated); setLocalData('cute_calendar_bookings', updated);
+                            try {
+                                if (db && window.FirebaseLib && b.id) {
+                                    window.FirebaseLib.deleteDoc(window.FirebaseLib.doc(db, `artifacts/${appId}/public/data/bookings`, b.id)).catch(e => console.warn(e));
+                                }
+                            } catch (err) { console.warn(err); }
+                            showModal('已拒絕', `已退回 @${b.twitter} 的預約申請。`);
+                        }}
+                    />
+
+                    <AdminBookingModal
+                        isOpen={!!selectedAdminBooking} booking={selectedAdminBooking} members={members} onClose={() => setSelectedAdminBooking(null)}
+                        onConfirmEnd={(b) => {
+                            setSelectedAdminBooking(null);
+                            const baseList = deduplicateBookings([...bookings, ...getLocalData('cute_calendar_bookings', [])]);
+                            const updated = baseList.map(item => isSameBooking(item, b) ? { ...item, status: 'completed' } : item);
+                            setBookings(updated); setLocalData('cute_calendar_bookings', updated);
+                            showModal('標記成功 🎉', `已將 @${b.twitter}${b.nickname ? ` (${b.nickname})` : ''} 的此筆約會標記為「已完成」！(次數計入 1 次)`);
+                            try {
+                                if (db && window.FirebaseLib && b.id) {
+                                    window.FirebaseLib.updateDoc(window.FirebaseLib.doc(db, `artifacts/${appId}/public/data/bookings`, b.id), { status: 'completed' }).catch(e => console.warn(e));
+                                }
+                            } catch (err) { console.warn(err); }
+                        }}
+                        onRevertComplete={(b) => {
+                            setSelectedAdminBooking(null);
+                            const baseList = deduplicateBookings([...bookings, ...getLocalData('cute_calendar_bookings', [])]);
+                            const updated = baseList.map(item => isSameBooking(item, b) ? { ...item, status: 'confirmed' } : item);
+                            setBookings(updated); setLocalData('cute_calendar_bookings', updated);
+                            showModal('已撤銷', `已將約會狀態恢復為「已核準」。`);
+                            try {
+                                if (db && window.FirebaseLib && b.id) {
+                                    window.FirebaseLib.updateDoc(window.FirebaseLib.doc(db, `artifacts/${appId}/public/data/bookings`, b.id), { status: 'confirmed' }).catch(e => console.warn(e));
+                                }
+                            } catch (err) { console.warn(err); }
+                        }}
+                        onCancelBooking={(b) => {
+                            setSelectedAdminBooking(null);
+                            const baseList = deduplicateBookings([...bookings, ...getLocalData('cute_calendar_bookings', [])]);
+                            const updated = baseList.filter(item => !isSameBooking(item, b));
+                            setBookings(updated); setLocalData('cute_calendar_bookings', updated);
+                            showModal('已刪除', '已取消該預約並釋出時段！');
+                            try {
+                                if (db && window.FirebaseLib && b.id) {
+                                    window.FirebaseLib.deleteDoc(window.FirebaseLib.doc(db, `artifacts/${appId}/public/data/bookings`, b.id)).catch(e => console.warn(e));
+                                }
+                            } catch (err) { console.warn(err); }
+                        }}
+                    />
+
+                    <AdminMembersModal
+                        isOpen={showMembersModal}
+                        members={members}
+                        bookings={bookings}
+                        unavailables={unavailables}
+                        onClose={() => setShowMembersModal(false)}
+                        onImportData={handleImportBackupData}
+                        onToggleBlacklist={(handle, currentStatus) => {
+                            const updatedMembers = { ...members, [handle]: { ...members[handle], twitter: handle, isBlacklisted: !currentStatus } };
+                            setMembers(updatedMembers); setLocalData('cute_calendar_members', updatedMembers);
+                            try {
+                                if (db && window.FirebaseLib && handle) {
+                                    window.FirebaseLib.setDoc(window.FirebaseLib.doc(db, `artifacts/${appId}/public/data/members`, handle), { twitter: handle, isBlacklisted: !currentStatus }, { merge: true }).catch(e => console.warn(e));
+                                }
+                            } catch (err) { console.warn(err); }
+                        }}
+                    />
+
+                    <CustomerHistoryModal isOpen={showHistoryModal} history={customerHistory} onClose={() => setShowHistoryModal(false)} />
+                    <ImageModal isOpen={showRulesModal} title="約會規則與細則詳閱" imageUrl="rules.PNG" onClose={() => setShowRulesModal(false)} />
+                    <ThsrFareModal isOpen={showThsrModal} currentLocation={location} onClose={() => setShowThsrModal(false)} />
+                    <Modal
+                        isOpen={modalConfig.isOpen}
+                        title={modalConfig.title}
+                        message={modalConfig.message}
+                        closeLabel={modalConfig.closeLabel}
+                        actionLabel={modalConfig.actionLabel}
+                        onAction={modalConfig.onAction}
+                        onClose={closeModal}
+                    />
+                </div>
+            );
+        };
+
+        try { ReactDOM.createRoot(document.getElementById('root')).render(<App />); }
+        catch(e) { console.error("React Render Error:", e); }
+    </script>
+</body>
+</html>
